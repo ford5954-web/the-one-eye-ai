@@ -106,48 +106,7 @@
             const reason = prompt("Please describe the issue (Inappropriate content, Error, etc.):");
             if(reason) alert("Thank you. Your report has been sent to our safety team.");
         }
-
-        async function process(mode, source) {
-            const val = document.getElementById('user-input').value;
-            document.getElementById('ui-main').classList.add('hidden');
-            document.getElementById('ui-loader').classList.remove('hidden');
-
-            try {
-                let img = null;
-                if(mode === 'image') {
-                    const input = document.getElementById(source === 'file' ? 'input-file' : 'input-camera');
-                    if(input.files[0]) img = (await toBase64(input.files[0])).split(',')[1];
-                }
-
-                const res = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: `Deep Scan. Focus on faces, context, and ethics. Calculate Positive vs Negative points. Return JSON: {"decision":"YES/NO","pos_score":70,"neg_score":30,"summary":"...","advice":"..."}. Note: This is for educational/fun purposes only.`,
-                        imageData: img
-                    })
-                });
-
-                const data = await res.json();
-                const ai = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, ""));
-                
-                setTimeout(() => {
-                    document.getElementById('ui-loader').classList.add('hidden');
-                    document.getElementById('ui-result').classList.remove('hidden');
-                    const isY = ai.decision === "YES";
-                    const dec = document.getElementById('res-decision');
-                    dec.innerText = isY ? "YES" : "NO";
-                    dec.style.color = isY ? "#00ff88" : "#ff4d4d";
-                    document.getElementById('res-card').style.borderColor = isY ? "#00ff88" : "#ff4d4d";
-                    document.getElementById('pos-val').innerText = `Positive: ${ai.pos_score}%`;
-                    document.getElementById('neg-val').innerText = `Negative: ${ai.neg_score}%`;
-                    document.getElementById('bar-pos').style.width = `${ai.pos_score}%`;
-                    document.getElementById('bar-neg').style.width = `${ai.neg_score}%`;
-                    document.getElementById('res-summary').innerText = ai.summary;
-                }, 3000);
-            } catch(e) { alert("AI Error. Check Connection."); location.reload(); }
-        }
-
+NNNNN
         const toBase64 = f => new Promise((v,r) => {
             const rd = new FileReader(); rd.readAsDataURL(f);
             rd.onload = () => v(rd.result);
