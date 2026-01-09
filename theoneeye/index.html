@@ -106,7 +106,67 @@
             const reason = prompt("Please describe the issue (Inappropriate content, Error, etc.):");
             if(reason) alert("Thank you. Your report has been sent to our safety team.");
         }
-NNNNN
+async function process(mode, source) {
+    const val = document.getElementById('user-input').value;
+    // إخفاء الواجهة وإظهار العين (اللودر)
+    document.getElementById('ui-main').classList.add('hidden');
+    document.getElementById('ui-loader').classList.remove('hidden');
+
+    try {
+        let img = null;
+        if(mode === 'image') {
+            const input = document.getElementById(source === 'file' ? 'input-file' : 'input-camera');
+            if(input.files[0]) img = (await toBase64(input.files[0])).split(',')[1];
+        }
+
+        // ملاحظة: تم استخدام المسار الكامل لضمان الاتصال
+        const res = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                prompt: `Analyze topic: ${val || 'Image content'}. Decide YES or NO. Calculate pos_score and neg_score. Return JSON only: {"decision":"YES/NO","pos_score":50,"neg_score":50,"summary":"...","advice":"..."}`,
+                imageData: img
+            })
+        });
+
+        if (!res.ok) throw new Error("Network Response Not OK");
+
+        const data = await res.json();
+        
+        // تنظيف وتحليل رد الذكاء الاصطناعي
+        let aiResult;
+        if (data.candidates && data.candidates[0]) {
+            let rawText = data.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+            aiResult = JSON.parse(rawText);
+        } else {
+            throw new Error("Invalid AI Data");
+        }
+        
+        // إظهار النتائج بعد 3 ثوانٍ لمحاكاة التحليل
+        setTimeout(() => {
+            document.getElementById('ui-loader').classList.add('hidden');
+            document.getElementById('ui-result').classList.remove('hidden');
+            
+            const isY = aiResult.decision === "YES";
+            const dec = document.getElementById('res-decision');
+            dec.innerText = isY ? "YES" : "NO";
+            dec.style.color = isY ? "#00ff88" : "#ff4d4d";
+            document.getElementById('res-card').style.borderColor = isY ? "#00ff88" : "#ff4d4d";
+            
+            document.getElementById('pos-val').innerText = `Positive: ${aiResult.pos_score}%`;
+            document.getElementById('neg-val').innerText = `Negative: ${aiResult.neg_score}%`;
+            document.getElementById('bar-pos').style.width = `${aiResult.pos_score}%`;
+            document.getElementById('bar-neg').style.width = `${aiResult.neg_score}%`;
+            document.getElementById('res-summary').innerText = aiResult.summary;
+        }, 3000);
+
+    } catch(e) {
+        console.error(e);
+        alert("⚠️ خطأ في الاتصال: تأكد من جودة الإنترنت أو أعد المحاولة.");
+        location.reload();
+    }
+}
+
         const toBase64 = f => new Promise((v,r) => {
             const rd = new FileReader(); rd.readAsDataURL(f);
             rd.onload = () => v(rd.result);
