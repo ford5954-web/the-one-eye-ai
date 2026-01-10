@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE ONE EYE AI | Ultimate Edition</title>
+    <title>THE ONE EYE AI | Professional Edition</title>
     
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,96 +14,94 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;900&display=swap');
         
-        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
         .vision-font { font-family: 'Syncopate', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); }
         
-        /* تأثير العين العبقرية المطور */
-        .eye-core {
-            width: 120px; height: 70px; background: #050505; border-radius: 60% 10%;
+        /* تصميم العين العبقرية */
+        .eye-container {
+            width: 140px; height: 80px; background: #050505; border-radius: 60% 10%;
             border: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden; transform: rotate(45deg); transition: 0.5s;
+            position: relative; overflow: hidden; transform: rotate(45deg);
         }
         .pupil {
-            width: 30px; height: 30px; background: #fff; border-radius: 50%;
-            box-shadow: 0 0 30px #fff; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 35px; height: 35px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 30px #fff; transition: 0.3s;
         }
-        .scanning .pupil { animation: scan 1s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
-        @keyframes scan { from { transform: scale(0.8) translate(-15px, -15px); } to { transform: scale(1.2) translate(15px, 15px); } }
+        .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
+        @keyframes scan { from { transform: translate(-20px, -20px); } to { transform: translate(20px, 20px); } }
         
-        .btn-glow:active { transform: scale(0.96); box-shadow: 0 0 30px rgba(0, 255, 136, 0.2); }
-        .history-card { background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%); }
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen">
 
     <div id="legal-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black">
         <div class="glass p-10 rounded-[3rem] max-w-md w-full text-center border-t-4 border-emerald-500 shadow-2xl">
-            <h2 class="vision-font text-xl text-emerald-500 mb-6 tracking-widest">Protocol Agreement</h2>
-            <div class="text-[10px] text-zinc-500 leading-relaxed space-y-4 mb-8 text-left max-h-40 overflow-y-auto font-mono">
+            <h2 class="vision-font text-lg text-emerald-500 mb-6 tracking-widest">AI PROTOCOL</h2>
+            <div class="text-[11px] text-zinc-500 leading-relaxed space-y-4 mb-8 text-left h-40 overflow-y-auto font-mono border-b border-white/5 pb-4">
                 <p>> Initializing secure AI environment...</p>
-                <p>> Warning: Data is processed for simulation purposes. No legal or medical liability is assumed by the system.</p>
-                <p>> User privacy: Images are processed in-memory and not stored on servers.</p>
+                <p>> Agreement: This tool is for simulation and educational purposes only.</p>
+                <p>> Privacy: No biometric data is stored on external servers.</p>
+                <p>> Liability: Users assume full responsibility for actions based on AI output.</p>
             </div>
-            <button onclick="acceptLegal()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-400 transition-colors">I Accept Protocol</button>
+            <button onclick="acceptLegal()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-400 transition-all">Accept Protocol</button>
         </div>
     </div>
 
-    <div id="app-content" class="hidden opacity-0 transition-all duration-1000 flex-grow">
-        <header class="p-6 flex justify-between items-center border-b border-white/5">
-            <span class="vision-font text-xs tracking-[0.5em] text-emerald-500">THE_ONE_EYE_V1</span>
-            <div id="google_translate_element" class="opacity-50 hover:opacity-100 transition-opacity"></div>
+    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000">
+        <header class="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-black/50 backdrop-blur-md z-50">
+            <span class="vision-font text-[10px] tracking-[0.4em] text-emerald-500">THE_ONE_EYE_V2</span>
+            <button onclick="closeApp()" class="text-[10px] font-black text-zinc-600 uppercase hover:text-red-500 transition-colors">Terminate</button>
         </header>
 
         <main class="max-w-lg mx-auto p-6 space-y-12">
-            <section id="ui-main" class="space-y-10 py-10">
+            <section id="ui-main" class="space-y-10 py-10 fade-in">
                 <div class="flex flex-col items-center">
-                    <div class="eye-core mb-10" id="visual-eye"><div class="pupil"></div></div>
-                    <h1 class="vision-font text-3xl italic tracking-tighter">ANALYZE_EVERYTHING</h1>
+                    <div class="eye-container mb-12" id="main-eye"><div class="pupil"></div></div>
+                    <h1 class="vision-font text-2xl italic tracking-tighter">ANALYZE_ENVIRONMENT</h1>
                 </div>
 
-                <div class="relative">
-                    <input id="user-input" type="text" class="w-full p-8 bg-zinc-950 border border-white/10 rounded-[2.5rem] text-center text-xl font-light focus:border-emerald-500 outline-none transition-all placeholder-zinc-800" placeholder="Type or scan...">
+                <div class="glass p-2 rounded-[2.5rem]">
+                    <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none placeholder-zinc-800" placeholder="Enter target data...">
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <button onclick="process('text')" class="btn-glow w-full bg-emerald-500 text-black p-8 rounded-[2.5rem] font-black text-2xl tracking-widest shadow-2xl transition-all">EXECUTE_AI</button>
+                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-8 rounded-[2.5rem] font-black text-2xl tracking-widest shadow-2xl active:scale-95 transition-all">EXECUTE_SCAN</button>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="triggerInput('file')" class="glass p-5 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Upload_Data</button>
-                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Live_Lens</button>
+                        <button onclick="triggerInput('file')" class="glass p-5 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-zinc-500">Upload_File</button>
+                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-zinc-500">Live_Lens</button>
                     </div>
                 </div>
 
-                <div class="pt-10">
-                    <p class="text-[9px] font-black text-zinc-700 uppercase tracking-[0.5em] mb-4">Neural_Archive</p>
-                    <div id="history-box" class="space-y-2 max-h-32 overflow-y-auto"></div>
+                <div class="pt-8 border-t border-white/5">
+                    <p class="text-[9px] font-black text-zinc-700 uppercase tracking-[0.4em] mb-4">Neural_Archive</p>
+                    <div id="history-box" class="space-y-2"></div>
                 </div>
             </section>
 
-            <section id="ui-loader" class="hidden py-20 text-center">
-                <div class="flex justify-center mb-10"><div class="eye-core scanning"><div class="pupil"></div></div></div>
-                <div class="text-[10px] font-mono text-emerald-500 tracking-widest animate-pulse">DECRYPTING_VISUAL_BIOMETRICS...</div>
+            <section id="ui-loader" class="hidden py-20 text-center fade-in">
+                <div class="flex justify-center mb-10"><div class="eye-container scanning"><div class="pupil"></div></div></div>
+                <div class="text-[10px] font-mono text-emerald-500 tracking-widest animate-pulse">DECRYPTING_BIO_SIGNALS...</div>
             </section>
 
-            <section id="ui-result" class="hidden space-y-8 pb-20">
-                <div id="res-card" class="p-12 rounded-[4rem] border-[1px] bg-gradient-to-b from-zinc-900 to-black text-center shadow-2xl transition-all duration-1000">
-                    <div id="res-status" class="text-[10px] font-black mb-10 tracking-[1em] text-zinc-500 uppercase">Decision_Output</div>
-                    <h2 id="res-decision" class="text-9xl font-black mb-10 vision-font tracking-tighter"></h2>
-                    
+            <section id="ui-result" class="hidden space-y-8 pb-20 fade-in">
+                <div id="res-card" class="p-12 rounded-[4rem] border bg-zinc-950 text-center shadow-2xl transition-all">
+                    <h2 id="res-decision" class="text-9xl font-black mb-8 vision-font italic tracking-tighter"></h2>
                     <div class="space-y-6">
-                        <div class="flex justify-between text-[10px] font-mono">
-                            <span class="text-emerald-500" id="pos-val">POS_LEVEL: 0%</span>
-                            <span class="text-rose-500" id="neg-val">NEG_LEVEL: 0%</span>
+                        <div class="flex justify-between text-[10px] font-mono uppercase tracking-widest">
+                            <span class="text-emerald-500" id="pos-val">Pos: 0%</span>
+                            <span class="text-rose-600" id="neg-val">Neg: 0%</span>
                         </div>
-                        <div class="w-full bg-zinc-950 h-1 rounded-full overflow-hidden flex">
-                            <div id="bar-pos" class="bg-emerald-500 h-full transition-all duration-[2s]"></div>
-                            <div id="bar-neg" class="bg-rose-500 h-full transition-all duration-[2s]"></div>
+                        <div class="w-full bg-black h-1 rounded-full overflow-hidden flex">
+                            <div id="bar-pos" class="bg-emerald-500 h-full transition-all duration-1000"></div>
+                            <div id="bar-neg" class="bg-rose-600 h-full transition-all duration-1000"></div>
                         </div>
                     </div>
-                    
-                    <p id="res-summary" class="mt-12 text-sm leading-relaxed text-zinc-400 font-light italic"></p>
+                    <p id="res-summary" class="mt-10 text-sm leading-relaxed text-zinc-500 italic"></p>
                 </div>
-                <button onclick="location.reload()" class="w-full p-8 glass rounded-[2.5rem] font-black uppercase tracking-widest text-emerald-500 hover:bg-white/5 transition-all">New_Operation</button>
+                <button onclick="location.reload()" class="w-full p-8 glass rounded-[2.5rem] font-black uppercase text-emerald-500 tracking-widest">Reset_System</button>
             </section>
         </main>
     </div>
@@ -111,116 +109,92 @@
     <input type="file" id="input-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
     <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
     <script>
-        // نظام إدارة البيانات أمنياً
         window.onload = () => {
             renderHistory();
-            if (localStorage.getItem('ai_protocol') === 'confirmed') unlockApp();
+            if (localStorage.getItem('eye_protocol') === 'agreed') showApp();
             else document.getElementById('legal-modal').classList.remove('hidden');
         };
 
         function acceptLegal() {
-            localStorage.setItem('ai_protocol', 'confirmed');
+            localStorage.setItem('eye_protocol', 'agreed');
             document.getElementById('legal-modal').classList.add('hidden');
-            unlockApp();
+            showApp();
         }
 
-        function unlockApp() {
+        function showApp() {
             const app = document.getElementById('app-content');
             app.classList.remove('hidden');
             setTimeout(() => app.style.opacity = '1', 100);
         }
 
+        function closeApp() { if(confirm("Terminate Session?")) window.location.href = "about:blank"; }
+
         function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
 
         async function process(mode, src) {
             const input = document.getElementById('user-input');
-            const val = input.value;
-            
             document.getElementById('ui-main').classList.add('hidden');
             document.getElementById('ui-loader').classList.remove('hidden');
 
             try {
-                let imgData = null;
+                let imgBase64 = null;
                 if(mode === 'image') {
-                    const fileInput = document.getElementById(src === 'file' ? 'input-file' : 'input-camera');
-                    if(fileInput.files[0]) {
-                        const reader = new FileReader();
-                        imgData = await new Promise(res => {
-                            reader.onload = () => res(reader.result.split(',')[1]);
-                            reader.readAsDataURL(fileInput.files[0]);
+                    const file = document.getElementById(src === 'file' ? 'input-file' : 'input-camera').files[0];
+                    if(file) {
+                        imgBase64 = await new Promise(r => {
+                            const rd = new FileReader();
+                            rd.onload = () => r(rd.result.split(',')[1]);
+                            rd.readAsDataURL(file);
                         });
                     }
                 }
 
-                const response = await fetch('/api/analyze', {
+                const res = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: `Scan query: ${val || 'Visual scan'}. Required format: JSON. Decision: YES/NO.`,
-                        imageData: imgData
-                    })
+                    body: JSON.stringify({ prompt: input.value, imageData: imgBase64 })
                 });
 
-                const data = await response.json();
-                
-                // استخلاص البيانات أمنياً من الرد
-                let ai;
-                try {
-                    const rawText = data.candidates[0].content.parts[0].text;
-                    ai = JSON.parse(rawText.replace(/```json|```/g, ""));
-                } catch {
-                    ai = data; // في حال كانت Edge Function ترسل JSON مباشر
-                }
+                const data = await res.json();
+                // تنظيف الرد أمنياً
+                const ai = data.candidates ? JSON.parse(data.candidates[0].content.parts[0].text) : data;
 
-                updateUI(ai, val || 'Visual Scan');
-                
-            } catch (err) {
-                alert("Neural Link Interrupted. System Rebooting...");
-                location.reload();
-            }
+                setTimeout(() => {
+                    document.getElementById('ui-loader').classList.add('hidden');
+                    document.getElementById('ui-result').classList.remove('hidden');
+                    
+                    const isY = ai.decision === "YES";
+                    const dec = document.getElementById('res-decision');
+                    dec.innerText = ai.decision;
+                    dec.style.color = isY ? '#00ff88' : '#ff4d4d';
+                    document.getElementById('res-card').style.borderColor = isY ? 'rgba(0,255,136,0.2)' : 'rgba(255,77,77,0.2)';
+                    
+                    document.getElementById('pos-val').innerText = `Pos: ${ai.pos_score}%`;
+                    document.getElementById('neg-val').innerText = `Neg: ${ai.neg_score}%`;
+                    document.getElementById('bar-pos').style.width = `${ai.pos_score}%`;
+                    document.getElementById('bar-neg').style.width = `${ai.neg_score}%`;
+                    document.getElementById('res-summary').innerText = ai.summary;
+                    
+                    saveHistory(input.value || "Visual Scan", ai.decision);
+                }, 1500);
+            } catch (e) { alert("Neural Error. Rebooting..."); location.reload(); }
         }
 
-        function updateUI(ai, topic) {
-            setTimeout(() => {
-                document.getElementById('ui-loader').classList.add('hidden');
-                document.getElementById('ui-result').classList.remove('hidden');
-                
-                const isYes = ai.decision === "YES";
-                const dec = document.getElementById('res-decision');
-                dec.innerText = ai.decision;
-                dec.style.color = isYes ? '#00ff88' : '#ff4d4d';
-                document.getElementById('res-card').style.borderColor = isYes ? 'rgba(0,255,136,0.3)' : 'rgba(255,77,77,0.3)';
-                
-                document.getElementById('pos-val').innerText = `POS_LEVEL: ${ai.pos_score}%`;
-                document.getElementById('neg-val').innerText = `NEG_LEVEL: ${ai.neg_score}%`;
-                document.getElementById('bar-pos').style.width = `${ai.pos_score}%`;
-                document.getElementById('bar-neg').style.width = `${ai.neg_score}%`;
-                document.getElementById('res-summary').innerText = ai.summary;
-                
-                addToHistory(topic, ai.decision);
-            }, 1500);
-        }
-
-        function addToHistory(t, r) {
-            let h = JSON.parse(localStorage.getItem('ai_archive') || '[]');
-            h.unshift({ t, r, d: new Date().toLocaleTimeString() });
-            localStorage.setItem('ai_archive', JSON.stringify(h.slice(0, 5)));
+        function saveHistory(t, r) {
+            let h = JSON.parse(localStorage.getItem('ai_logs') || '[]');
+            h.unshift({ t, r });
+            localStorage.setItem('ai_logs', JSON.stringify(h.slice(0, 5)));
             renderHistory();
         }
 
         function renderHistory() {
             const box = document.getElementById('history-box');
-            const h = JSON.parse(localStorage.getItem('ai_archive') || '[]');
+            const h = JSON.parse(localStorage.getItem('ai_logs') || '[]');
             box.innerHTML = h.map(i => `
-                <div class="history-card p-4 rounded-xl flex justify-between items-center border border-white/5">
-                    <span class="text-[9px] font-bold text-zinc-500 uppercase">${i.t}</span>
-                    <span class="text-[10px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-500'}">${i.r}</span>
+                <div class="p-4 rounded-xl flex justify-between items-center border border-white/5 bg-zinc-950/50">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold truncate w-40">${i.t}</span>
+                    <span class="text-[10px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
                 </div>
             `).join('');
         }
