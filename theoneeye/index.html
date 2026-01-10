@@ -129,114 +129,129 @@
 
     <input type="file" id="input-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
     <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
+<script>
+    // نظام إدارة الحالة والأمان
+    window.onload = () => {
+        renderHistory();
+        if (localStorage.getItem('eye_protocol_v3') === 'agreed') showApp();
+        else document.getElementById('legal-modal').classList.remove('hidden');
+    };
 
-    <script>
-        window.onload = () => {
-            renderHistory();
-            if (localStorage.getItem('eye_protocol_v3') === 'agreed') showApp();
-            else document.getElementById('legal-modal').classList.remove('hidden');
-        };
+    function acceptLegal() {
+        localStorage.setItem('eye_protocol_v3', 'agreed');
+        document.getElementById('legal-modal').classList.add('hidden');
+        showApp();
+    }
 
-        function acceptLegal() {
-            localStorage.setItem('eye_protocol_v3', 'agreed');
-            document.getElementById('legal-modal').classList.add('hidden');
-            showApp();
-        }
+    function showApp() {
+        const app = document.getElementById('app-content');
+        app.classList.remove('hidden');
+        setTimeout(() => app.style.opacity = '1', 100);
+    }
 
-        function showApp() {
-            const app = document.getElementById('app-content');
-            app.classList.remove('hidden');
-            setTimeout(() => app.style.opacity = '1', 100);
-        }
+    function closeApp() { if(confirm("Terminate Neural Link?")) window.location.href = "about:blank"; }
 
-        function closeApp() { if(confirm("Terminate Neural Link?")) window.location.href = "about:blank"; }
+    function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
 
-        function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
+    async function process(mode, src) {
+        const input = document.getElementById('user-input');
+        const uiMain = document.getElementById('ui-main');
+        const uiLoader = document.getElementById('ui-loader');
 
-        async function process(mode, src) {
-            const input = document.getElementById('user-input');
-            document.getElementById('ui-main').classList.add('hidden');
-            document.getElementById('ui-loader').classList.remove('hidden');
+        uiMain.classList.add('hidden');
+        uiLoader.classList.remove('hidden');
 
-            try {
-                let imgBase64 = null;
-                if(mode === 'image') {
-                    const file = document.getElementById(src === 'file' ? 'input-file' : 'input-camera').files[0];
-                    if(file) {
-                        imgBase64 = await new Promise(r => {
-                            const rd = new FileReader();
-                            rd.onload = () => r(rd.result.split(',')[1]);
-                            rd.readAsDataURL(file);
-                        });
-                    }
+        try {
+            let imgBase64 = null;
+            if(mode === 'image') {
+                const fileInput = document.getElementById(src === 'file' ? 'input-file' : 'input-camera');
+                const file = fileInput.files[0];
+                if(file) {
+                    imgBase64 = await new Promise((res, rej) => {
+                        const rd = new FileReader();
+                        rd.onload = () => res(rd.result.split(',')[1]);
+                        rd.onerror = rej;
+                        rd.readAsDataURL(file);
+                    });
                 }
-
-                const res = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        prompt: `Perform professional analysis: 
-                        1. Facial micro-expressions & reliability. 
-                        2. Extract info from Barcode/QR if present. 
-                        3. Compare Logic.
-                        Target: ${input.value || "Visual Data"}. 
-                        Format: JSON ONLY. Fields: decision (YES/NO), pos_score, neg_score, uncertain_score, summary.`, 
-                        imageData: imgBase64 
-                    })
-                });
-
-                const data = await res.json();
-                const ai = data.candidates ? JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, "")) : data;
-
-                updateUI(ai, input.value || "Scan Task");
-            } catch (e) { 
-                alert("Protocol Error. Restarting System..."); 
-                location.reload(); 
             }
+
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    prompt: input.value || "Professional biometric and visual scan", 
+                    imageData: imgBase64 
+                })
+            });
+
+            if (!response.ok) throw new Error(`Server Error: ${response.status}`);
+
+            const ai = await response.json();
+            
+            // تحديث الواجهة بالبيانات المستلمة
+            updateUI(ai, input.value || "System Scan");
+
+        } catch (e) { 
+            console.error("Critical Failure:", e);
+            alert("Protocol Error: Neural Link Timeout. Please try again."); 
+            location.reload(); 
         }
+    }
 
-        function updateUI(ai, topic) {
-            setTimeout(() => {
-                document.getElementById('ui-loader').classList.add('hidden');
-                document.getElementById('ui-result').classList.remove('hidden');
-                
-                // تحديث القيم النصية
-                document.getElementById('pos-val').innerText = ai.pos_score || 0;
-                document.getElementById('neg-val').innerText = ai.neg_score || 0;
-                document.getElementById('unc-val').innerText = ai.uncertain_score || 0;
+    function updateUI(ai, topic) {
+        setTimeout(() => {
+            document.getElementById('ui-loader').classList.add('hidden');
+            document.getElementById('ui-result').classList.remove('hidden');
+            
+            // تأمين القيم (Fallback Values) في حال نقصت أي قيمة من السيرفر
+            const pos = ai.pos_score || 0;
+            const neg = ai.neg_score || 0;
+            const unc = ai.uncertain_score || (100 - (pos + neg)); // حساب الشك تلقائياً إذا فُقد
 
-                // تحديث أشرطة المقارنة الثلاثية
-                document.getElementById('bar-pos').style.width = `${ai.pos_score}%`;
-                document.getElementById('bar-neg').style.width = `${ai.neg_score}%`;
-                document.getElementById('bar-unc').style.width = `${ai.uncertain_score}%`;
+            // تحديث الأرقام
+            document.getElementById('pos-val').innerText = pos;
+            document.getElementById('neg-val').innerText = neg;
+            document.getElementById('unc-val').innerText = unc;
 
-                const dec = document.getElementById('res-decision');
-                dec.innerText = ai.decision;
-                dec.style.color = ai.decision === "YES" ? '#00ff88' : '#ff4d4d';
-                
-                document.getElementById('res-summary').innerText = ai.summary;
-                
-                saveHistory(topic, ai.decision);
-            }, 1500);
+            // تحديث الأشرطة (Triple-Bar System)
+            document.getElementById('bar-pos').style.width = `${pos}%`;
+            document.getElementById('bar-neg').style.width = `${neg}%`;
+            document.getElementById('bar-unc').style.width = `${unc}%`;
+
+            const decElement = document.getElementById('res-decision');
+            const decision = ai.decision || "UNKNOWN";
+            decElement.innerText = decision;
+            decElement.style.color = decision === "YES" ? '#00ff88' : (decision === "NO" ? '#ff4d4d' : '#f59e0b');
+            
+            document.getElementById('res-summary').innerText = ai.summary || "Analysis complete. System could not generate a textual summary but scores are provided.";
+            
+            saveHistory(topic, decision);
+        }, 1200);
+    }
+
+    function saveHistory(t, r) {
+        let h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
+        h.unshift({ t: t.substring(0, 20), r });
+        localStorage.setItem('ai_logs_v3', JSON.stringify(h.slice(0, 5)));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const box = document.getElementById('history-box');
+        const h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
+        if (h.length === 0) {
+            box.innerHTML = '<p class="text-[8px] text-zinc-800 uppercase tracking-widest">No previous logs found.</p>';
+            return;
         }
+        box.innerHTML = h.map(i => `
+            <div class="p-3 rounded-xl flex justify-between items-center border border-white/5 bg-zinc-950/50 mb-2 fade-in">
+                <span class="text-[9px] text-zinc-500 uppercase font-bold truncate w-32">${i.t}</span>
+                <span class="text-[9px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
+            </div>
+        `).join('');
+    }
+</script>
 
-        function saveHistory(t, r) {
-            let h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
-            h.unshift({ t, r });
-            localStorage.setItem('ai_logs_v3', JSON.stringify(h.slice(0, 5)));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const box = document.getElementById('history-box');
-            const h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
-            box.innerHTML = h.map(i => `
-                <div class="p-4 rounded-xl flex justify-between items-center border border-white/5 bg-zinc-950/50">
-                    <span class="text-[10px] text-zinc-500 uppercase font-bold truncate w-40">${i.t}</span>
-                    <span class="text-[10px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
-                </div>
-            `).join('');
-        }
-    </script>
 </body>
 </html>
