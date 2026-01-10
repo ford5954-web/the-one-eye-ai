@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,106 +8,98 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1581/1581884.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1581/1581884.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2592/2592223.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2592/2592223.png">
     <link rel="preconnect" href="https://generativelanguage.googleapis.com">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;900&family=Inter:wght@400;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         :root { --primary: #00ff88; --secondary: #ff4d4d; }
-        body { font-family: 'Tajawal', 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; touch-action: manipulation; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; touch-action: manipulation; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        
-        /* تأثير العين النابضة */
-        .eye-socket { 
-            width: 100px; height: 60px; background: #111; border-radius: 50%; 
-            border: 2px solid #333; display: flex; align-items: center; justify-content: center; 
-            position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0,255,136,0.1);
-        }
+        .eye-socket { width: 100px; height: 60px; background: #111; border-radius: 50%; border: 2px solid #333; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
         .pupil { width: 35px; height: 35px; background: #fff; border-radius: 50%; position: absolute; transition: 0.3s; }
         .scanning .pupil { animation: scanMove 1.5s infinite alternate ease-in-out; background: var(--primary); box-shadow: 0 0 20px var(--primary); }
-        
         @keyframes scanMove { from { transform: translateX(-30px); } to { transform: translateX(30px); } }
-        
         .hidden { display: none; }
         .fade-in { animation: fadeIn 0.5s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* تحسين مظهر أداة ترجمة جوجل */
-        #google_translate_element { height: 38px; overflow: hidden; border-radius: 10px; }
-        .goog-te-gadget-simple { background-color: transparent !important; border: none !important; color: white !important; }
+        .history-item { border-left: 4px solid var(--primary); background: rgba(255,255,255,0.02); margin-bottom: 8px; padding: 12px; border-radius: 8px; }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <div id="legal-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black/95">
-        <div class="glass p-8 rounded-[2.5rem] max-w-md text-center border-orange-500/30">
+    <div id="legal-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black/95">
+        <div class="glass p-8 rounded-[2.5rem] max-w-md text-center border-orange-500/30 shadow-2xl">
             <div class="text-5xl mb-4">⚠️</div>
-            <h2 class="text-2xl font-black text-orange-500 mb-4">اتفاقية الاستخدام القانونية</h2>
-            <div class="text-sm leading-relaxed text-zinc-400 space-y-4 mb-8 h-60 overflow-y-auto px-2">
-                <p>هذا التطبيق مخصص لأغراض <b>تعليمية، تثقيفية، وترفيهية فقط</b>.</p>
-                <p>النتائج المقدمة هي نتاج تحليل الذكاء الاصطناعي بناءً على مقارنة البيانات الإيجابية والسلبية والمشكوك فيها، ولا تشكل بأي حال من الأحوال استشارة مهنية، طبية، قانونية، أو مالية.</p>
-                <p>يخلي المطور مسؤوليته الكاملة عن أي استخدام خاطئ أو غير قانوني لهذه الأداة. يجب على المستخدم البحث والتحقق من النتائج من مصادر رسمية ومختصة.</p>
-                <p>باستخدامك لهذا التطبيق، أنت تقر بمسؤوليتك الكاملة عن قراراتك.</p>
+            <h2 class="text-2xl font-black text-orange-500 mb-4 uppercase italic">Terms of Use</h2>
+            <div class="text-[11px] leading-relaxed text-zinc-400 space-y-4 mb-8 h-48 overflow-y-auto px-2 text-left border-b border-white/5 pb-4">
+                <p>1. This AI tool is for <b>Educational & Entertainment</b> purposes only.</p>
+                <p>2. Analysis results are based on data probability and do not replace professional advice.</p>
+                <p>3. The developer holds no liability for decisions made based on this app.</p>
+                <p>4. By proceeding, you agree to verify critical information independently.</p>
             </div>
-            <button onclick="acceptLegal()" class="w-full bg-orange-600 hover:bg-orange-500 p-5 rounded-2xl font-bold transition-all">أوافق وأتحمل المسؤولية</button>
+            <div class="flex flex-col gap-3">
+                <button onclick="acceptLegal()" class="w-full bg-orange-600 hover:bg-orange-500 p-5 rounded-2xl font-black transition-all uppercase tracking-tighter">Accept & Enter</button>
+                <button onclick="closeApp()" class="w-full bg-zinc-900 p-3 rounded-xl font-bold text-zinc-600 text-xs uppercase">Exit</button>
+            </div>
         </div>
     </div>
 
     <div id="app-content" class="hidden opacity-0 transition-opacity duration-700">
         <header class="p-4 flex justify-between items-center glass sticky top-0 z-50">
-            <div id="google_translate_element"></div>
-            <span class="font-black text-xl tracking-tighter text-green-500">THE ONE EYE AI</span>
+            <span class="font-black text-xl tracking-tighter text-green-500 italic">THE ONE EYE</span>
+            <div id="google_translate_element" class="opacity-70 scale-90"></div>
         </header>
 
-        <main class="max-w-md mx-auto px-6 py-10">
+        <main class="max-w-md mx-auto px-6 py-8">
             <div id="ui-main" class="space-y-8 fade-in">
                 <div class="text-center">
-                    <h1 class="text-4xl font-black mb-2 italic">Vision Engine</h1>
-                    <p class="text-zinc-500 text-[10px] uppercase tracking-[0.3em]">التحليل البصري والمقارنة</p>
+                    <h1 class="text-4xl font-black mb-2 tracking-tighter uppercase italic">Vision Engine</h1>
+                    <p class="text-zinc-600 text-[9px] uppercase tracking-[0.4em]">Advanced Bio-Metric Simulation</p>
                 </div>
 
-                <div class="glass p-2 rounded-[2.5rem]">
-                    <input id="user-input" type="text" class="w-full p-6 bg-transparent text-center text-xl outline-none placeholder-zinc-700" placeholder="اكتب موضوعاً أو ارفع صورة...">
+                <div class="glass p-2 rounded-[2.5rem] border-white/10 shadow-inner">
+                    <input id="user-input" type="text" class="w-full p-6 bg-transparent text-center text-xl outline-none placeholder-zinc-800 font-bold" placeholder="Ask anything...">
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <button onclick="process('text')" class="w-full bg-blue-600 p-6 rounded-[2rem] font-black text-xl shadow-xl active:scale-95 transition-transform">تحليل ذكي ⚡</button>
+                    <button onclick="process('text')" class="w-full bg-blue-600 hover:bg-blue-500 p-6 rounded-[2rem] font-black text-2xl shadow-xl active:scale-95 transition-all">ANALYZE ⚡</button>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="triggerInput('file')" class="bg-zinc-900 border border-white/5 p-4 rounded-2xl text-[10px] font-bold uppercase">ملف من الجهاز</button>
-                        <button onclick="triggerInput('camera')" class="bg-zinc-900 border border-white/5 p-4 rounded-2xl text-[10px] font-bold uppercase">كاميرا مباشرة</button>
+                        <button onclick="triggerInput('file')" class="bg-zinc-900 border border-white/5 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-zinc-400">Upload File</button>
+                        <button onclick="triggerInput('camera')" class="bg-zinc-900 border border-white/5 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-zinc-400">Live Camera</button>
                     </div>
                 </div>
+
+                <div class="mt-10">
+                    <h3 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4">Recent Scans</h3>
+                    <div id="history-container" class="max-h-40 overflow-y-auto pr-2 space-y-2">
+                        </div>
+                </div>
+                
+                <button onclick="closeApp()" class="w-full p-3 text-zinc-800 text-[9px] font-bold uppercase tracking-widest">Terminate Session</button>
             </div>
 
-            <div id="ui-loader" class="hidden py-10 text-center fade-in">
-                <div class="flex justify-center mb-6">
-                    <div class="eye-socket scanning"><div class="pupil"></div></div>
-                </div>
-                <p class="text-green-500 font-bold animate-pulse text-sm">جاري المعالجة عبر السيرفر العالمي...</p>
+            <div id="ui-loader" class="hidden py-20 text-center fade-in">
+                <div class="flex justify-center mb-6"><div class="eye-socket scanning"><div class="pupil"></div></div></div>
+                <p class="text-green-500 font-black tracking-widest text-xs uppercase animate-pulse">Computing Variables...</p>
             </div>
 
             <div id="ui-result" class="hidden space-y-6 fade-in">
-                <div id="res-card" class="p-10 rounded-[4rem] border-[8px] bg-black text-center shadow-2xl transition-all duration-500">
-                    <h2 id="res-decision" class="text-8xl font-black mb-4 tracking-tighter"></h2>
-                    <div class="flex justify-between text-[10px] font-bold mb-3 px-2">
-                        <span class="text-red-500" id="neg-val">سلبية: 0%</span>
-                        <span class="text-green-400" id="pos-val">إيجابية: 0%</span>
+                <div id="res-card" class="p-10 rounded-[4rem] border-[10px] bg-black text-center shadow-2xl transition-all duration-700">
+                    <h2 id="res-decision" class="text-8xl font-black mb-4 tracking-tighter italic"></h2>
+                    <div class="flex justify-between text-[10px] font-black mb-4 px-2 tracking-widest">
+                        <span class="text-red-600" id="neg-val">NEG: 0%</span>
+                        <span class="text-green-500" id="pos-val">POS: 0%</span>
                     </div>
-                    <div class="w-full bg-zinc-800 rounded-full h-3 overflow-hidden flex">
+                    <div class="w-full bg-zinc-900 rounded-full h-3 overflow-hidden flex border border-white/5">
                         <div id="bar-neg" class="bg-red-600 h-full transition-all duration-1000" style="width: 0%"></div>
                         <div id="bar-pos" class="bg-green-500 h-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
-                    <p id="res-summary" class="mt-6 text-lg italic text-zinc-300"></p>
+                    <p id="res-summary" class="mt-8 text-sm leading-relaxed text-zinc-400 font-medium"></p>
                 </div>
-                
-                <div class="glass p-6 rounded-[2rem]">
-                    <p id="res-advice" class="text-sm leading-relaxed text-zinc-300"></p>
-                </div>
-
-                <button onclick="location.reload()" class="w-full p-5 glass rounded-2xl font-bold text-zinc-400">بدء فحص جديد</button>
+                <button onclick="location.reload()" class="w-full p-6 glass rounded-[2rem] font-black text-zinc-200 uppercase tracking-widest border-white/20">New Scan</button>
             </div>
         </main>
     </div>
@@ -116,45 +108,49 @@
     <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
 
     <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'ar'}, 'google_translate_element');
-        }
+        function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
-        // كود تسجيل الـ Service Worker للتثبيت والسرعة
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW failed', err));
-            });
-        }
+        window.onload = () => {
+            loadHistory();
+            if (localStorage.getItem('oneEyeLegal') === 'agreed') showApp();
+            else document.getElementById('legal-modal').classList.remove('hidden');
+        };
 
         function acceptLegal() {
-            document.getElementById('legal-modal').style.display = 'none';
+            localStorage.setItem('oneEyeLegal', 'agreed');
+            document.getElementById('legal-modal').classList.add('hidden');
+            showApp();
+        }
+
+        function showApp() {
             const app = document.getElementById('app-content');
             app.classList.remove('hidden');
             setTimeout(() => app.style.opacity = '1', 50);
         }
 
-        function triggerInput(type) {
-            document.getElementById(type === 'file' ? 'input-file' : 'input-camera').click();
+        function closeApp() {
+            if(confirm("Exit Application?")) window.location.href = "about:blank";
         }
+
+        function triggerInput(type) { document.getElementById(type === 'file' ? 'input-file' : 'input-camera').click(); }
 
         async function process(mode, source) {
             const val = document.getElementById('user-input').value;
             document.getElementById('ui-main').classList.add('hidden');
             document.getElementById('ui-loader').classList.remove('hidden');
-
+            
             try {
                 let img = null;
                 if(mode === 'image') {
                     const input = document.getElementById(source === 'file' ? 'input-file' : 'input-camera');
                     if(input.files[0]) {
-                        const reader = new FileReader();
                         img = await new Promise(v => {
-                            reader.onload = () => v(reader.result.split(',')[1]);
-                            reader.readAsDataURL(input.files[0]);
+                            const rd = new FileReader();
+                            rd.onload = () => v(rd.result.split(',')[1]);
+                            rd.readAsDataURL(input.files[0]);
                         });
                     }
                 }
@@ -163,40 +159,50 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        prompt: `Perform deep analysis. Scores must sum to 100. Return JSON ONLY: {"decision":"YES/NO","pos_score":0,"neg_score":0,"summary":"...","advice":"..."}. Target: ${val || 'Visual Data'}`,
+                        prompt: `Analyze clearly. JSON ONLY: {"decision":"YES/NO","pos_score":0,"neg_score":0,"summary":"...","advice":"..."}. Context: ${val || 'Visual'}`,
                         imageData: img
                     })
                 });
-
-                const data = await res.json();
-                // استخراج الـ JSON من رد السيرفر (Edge أو Serverless)
-                let ai = data.candidates ? JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, "")) : data;
-
+                
+                const ai = await res.json();
+                saveToHistory(val || 'Image Scan', ai.decision);
+                
                 setTimeout(() => {
                     document.getElementById('ui-loader').classList.add('hidden');
                     document.getElementById('ui-result').classList.remove('hidden');
-                    
-                    const isY = ai.decision === "YES";
+                    const isY = ai.decision === 'YES';
                     const dec = document.getElementById('res-decision');
-                    dec.innerText = isY ? "نعم" : "لا";
-                    
-                    const color = isY ? "#00ff88" : "#ff4d4d";
-                    dec.style.color = color;
-                    document.getElementById('res-card').style.borderColor = color;
-                    
-                    document.getElementById('pos-val').innerText = `إيجابية: ${ai.pos_score}%`;
-                    document.getElementById('neg-val').innerText = `سلبية: ${ai.neg_score}%`;
+                    dec.innerText = ai.decision;
+                    dec.style.color = isY ? '#00ff88' : '#ff4d4d';
+                    document.getElementById('res-card').style.borderColor = isY ? '#00ff88' : '#ff4d4d';
+                    document.getElementById('pos-val').innerText = `POS: ${ai.pos_score}%`;
+                    document.getElementById('neg-val').innerText = `NEG: ${ai.neg_score}%`;
                     document.getElementById('bar-pos').style.width = `${ai.pos_score}%`;
                     document.getElementById('bar-neg').style.width = `${ai.neg_score}%`;
-                    
                     document.getElementById('res-summary').innerText = ai.summary;
-                    document.getElementById('res-advice').innerText = ai.advice;
-                }, 2000);
+                }, 1500);
+            } catch(e) { alert("AI Core Offline. Reconnecting..."); location.reload(); }
+        }
 
-            } catch(e) {
-                alert("السيرفر مشغول حالياً. يرجى المحاولة مرة أخرى.");
-                location.reload();
+        function saveToHistory(topic, result) {
+            let history = JSON.parse(localStorage.getItem('eye_history') || '[]');
+            history.unshift({ topic, result, date: new Date().toLocaleTimeString() });
+            localStorage.setItem('eye_history', JSON.stringify(history.slice(0, 10)));
+        }
+
+        function loadHistory() {
+            const container = document.getElementById('history-container');
+            const history = JSON.parse(localStorage.getItem('eye_history') || '[]');
+            if(history.length === 0) {
+                container.innerHTML = '<p class="text-[9px] text-zinc-700">No records found.</p>';
+                return;
             }
+            container.innerHTML = history.map(item => `
+                <div class="history-item flex justify-between items-center">
+                    <span class="text-[10px] font-bold text-zinc-300 truncate w-32">${item.topic}</span>
+                    <span class="text-[9px] font-black ${item.result === 'YES' ? 'text-green-500' : 'text-red-500'}">${item.result}</span>
+                </div>
+            `).join('');
         }
     </script>
 </body>
