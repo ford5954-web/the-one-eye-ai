@@ -1,196 +1,124 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE ONE EYE AI | Ultimate Imperial Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE ONE EYE AI | Fixed Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow: hidden; }
         .vision-font { font-family: 'Syncopate', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .eye-container { width: 140px; height: 80px; background: #050505; border-radius: 60% 10%; border: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transform: rotate(45deg); transition: 0.5s; }
-        .pupil { width: 35px; height: 35px; background: #fff; border-radius: 50%; box-shadow: 0 0 30px #fff; transition: 0.3s; }
-        .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
-        @keyframes scan { from { transform: translate(-20px, -20px); } to { transform: translate(20px, 20px); } }
-        .fade-in { animation: fadeIn 0.8s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .eye-container { width: 120px; height: 70px; background: #0a0a0a; border-radius: 60% 10%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; overflow: hidden; transition: 0.5s; }
+        .pupil { width: 30px; height: 30px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; }
+        .scanning .pupil { animation: scan 1s infinite alternate; background: #00ff88; box-shadow: 0 0 35px #00ff88; }
+        @keyframes scan { from { transform: translate(-15px, -15px); } to { transform: translate(15px, 15px); } }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col">
 
-    <div id="legal-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black">
-        <div class="glass p-10 rounded-[3rem] max-w-md w-full text-center border-t-4 border-emerald-500 shadow-2xl">
-            <h2 class="vision-font text-lg text-emerald-500 mb-6 tracking-widest">AI PROTOCOL</h2>
-            <div class="text-[11px] text-zinc-500 leading-relaxed mb-8 text-left h-40 overflow-y-auto font-mono border-b border-white/5 pb-4">
-                <p>> Face Metrics & Code Recognition Loaded...</p>
-                <p>> Haptic Feedback: Active</p>
-                <p>> Neural Sounds: Active</p>
-            </div>
-            <button onclick="acceptLegal()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-400 transition-all">Accept & Enter</button>
-        </div>
-    </div>
-
-    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000">
-        <header class="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-black/80 backdrop-blur-lg z-50">
-            <span class="vision-font text-[10px] tracking-[0.4em] text-emerald-500">THE_ONE_EYE_V3</span>
-            <button onclick="location.reload()" class="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Reset</button>
+    <div id="app-content" class="flex-grow flex flex-col p-6 space-y-8">
+        <header class="flex justify-between items-center opacity-50">
+            <span class="vision-font text-[9px] tracking-[0.3em]">ONE_EYE_CORE_V4</span>
+            <span class="text-[9px] font-mono" id="status-tag">SYSTEM_READY</span>
         </header>
 
-        <main class="max-w-lg mx-auto p-6 space-y-12">
-            <section id="ui-main" class="space-y-10 py-10 fade-in">
-                <div class="flex flex-col items-center">
-                    <div class="eye-container mb-12" id="main-eye"><div class="pupil"></div></div>
-                    <h1 class="vision-font text-2xl italic tracking-tighter">ULTIMATE_SCANNER</h1>
-                </div>
-
-                <div class="glass p-2 rounded-[2.5rem] border-white/10">
-                    <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none placeholder-zinc-800" placeholder="Analyze target...">
-                </div>
-
+        <main class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full space-y-10">
+            <div id="ui-main" class="space-y-10 text-center">
+                <div class="flex justify-center"><div class="eye-container" id="main-eye"><div class="pupil"></div></div></div>
+                <h1 class="vision-font text-xl italic tracking-tighter text-emerald-500">NEURAL_SCANNER</h1>
+                <input id="user-input" type="text" class="w-full p-6 glass rounded-3xl text-center outline-none focus:border-emerald-500 transition-all" placeholder="Enter query...">
                 <div class="grid grid-cols-1 gap-4">
-                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-8 rounded-[2.5rem] font-black text-2xl tracking-widest shadow-2xl active:scale-95 transition-all">EXECUTE_AI</button>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="triggerInput('file')" class="glass p-5 rounded-3xl text-[10px] font-bold uppercase tracking-widest text-zinc-500">File_Data</button>
-                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-3xl text-[10px] font-bold uppercase tracking-widest text-zinc-500">Live_Lens</button>
+                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-6 rounded-3xl font-black tracking-widest active:scale-95 transition-all">EXECUTE</button>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="triggerInput('file')" class="glass p-4 rounded-2xl text-[9px] font-bold uppercase">Upload</button>
+                        <button onclick="triggerInput('camera')" class="glass p-4 rounded-2xl text-[9px] font-bold uppercase">Camera</button>
                     </div>
                 </div>
+            </div>
 
-                <div id="history-box" class="space-y-2 pt-8 border-t border-white/5"></div>
-            </section>
+            <div id="ui-loader" class="hidden text-center space-y-6">
+                <div class="flex justify-center"><div class="eye-container scanning"><div class="pupil"></div></div></div>
+                <p class="text-[10px] font-mono text-emerald-500 animate-pulse">DECRYPTING_PACKETS...</p>
+            </div>
 
-            <section id="ui-loader" class="hidden py-20 text-center fade-in">
-                <div class="flex justify-center mb-10"><div class="eye-container scanning"><div class="pupil"></div></div></div>
-                <div class="text-[10px] font-mono text-emerald-500 tracking-widest animate-pulse">DECRYPTING_NEURAL_LAYERS...</div>
-            </section>
-
-            <section id="ui-result" class="hidden space-y-8 pb-20 fade-in">
-                <div class="p-10 rounded-[4rem] border border-white/10 bg-zinc-950 text-center shadow-2xl">
-                    <h2 id="res-decision" class="text-8xl font-black mb-10 vision-font italic tracking-tighter"></h2>
-                    
-                    <div class="space-y-4 mb-10">
-                        <div class="flex justify-between text-[9px] font-mono uppercase tracking-widest px-1">
-                            <span class="text-emerald-500">Pos: <span id="pos-val">0</span>%</span>
-                            <span class="text-amber-500">Unc: <span id="unc-val">0</span>%</span>
-                            <span class="text-rose-500">Neg: <span id="neg-val">0</span>%</span>
-                        </div>
-                        <div class="w-full h-5 bg-black rounded-full overflow-hidden flex border border-white/10 p-[2px]">
-                            <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.4)]"></div>
-                            <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000 shadow-[0_0_15px_rgba(245,158,11,0.4)]"></div>
-                            <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000 shadow-[0_0_15px_rgba(225,29,72,0.4)]"></div>
-                        </div>
+            <div id="ui-result" class="hidden space-y-6">
+                <div class="p-8 rounded-[3rem] glass border-emerald-500/20 text-center">
+                    <h2 id="res-decision" class="text-7xl font-black mb-6 vision-font italic"></h2>
+                    <div class="w-full h-4 bg-black/50 rounded-full flex overflow-hidden p-1 border border-white/5 mb-6">
+                        <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000"></div>
+                        <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000"></div>
+                        <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000"></div>
                     </div>
-                    <p id="res-summary" class="text-sm leading-relaxed text-zinc-400 italic"></p>
+                    <p id="res-summary" class="text-xs text-zinc-400 leading-relaxed italic"></p>
                 </div>
-                <button onclick="location.reload()" class="w-full p-8 glass rounded-[2.5rem] font-black uppercase text-emerald-500 tracking-widest">New_Scan</button>
-            </section>
+                <button onclick="location.reload()" class="w-full p-6 glass rounded-3xl font-bold uppercase text-emerald-500">Dismiss</button>
+            </div>
         </main>
     </div>
 
-    <audio id="snd-scan" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
-    <audio id="snd-result" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
-
+    <audio id="snd-scan" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
     <input type="file" id="input-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
     <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
 
     <script>
-        window.onload = () => {
-            renderHistory();
-            if (localStorage.getItem('eye_protocol_v3') === 'agreed') showApp();
-            else document.getElementById('legal-modal').classList.remove('hidden');
-        };
-
-        function showApp() {
-            const app = document.getElementById('app-content');
-            app.classList.remove('hidden');
-            setTimeout(() => app.style.opacity = '1', 100);
-        }
-
-        function acceptLegal() {
-            localStorage.setItem('eye_protocol_v3', 'agreed');
-            document.getElementById('legal-modal').classList.add('hidden');
-            showApp();
-        }
-
-        function playSnd(id) {
-            const s = document.getElementById(id);
-            if(s) { s.currentTime = 0; s.play().catch(e => {}); }
-            if(navigator.vibrate) navigator.vibrate(id === 'snd-scan' ? [30, 30, 30] : 100);
-        }
-
         function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
 
         async function process(mode, src) {
-            playSnd('snd-scan');
             const input = document.getElementById('user-input');
-            document.getElementById('ui-main').classList.add('hidden');
-            document.getElementById('ui-loader').classList.remove('hidden');
+            const loader = document.getElementById('ui-loader');
+            const main = document.getElementById('ui-main');
+
+            main.classList.add('hidden');
+            loader.classList.remove('hidden');
+            document.getElementById('snd-scan').play().catch(() => {});
 
             try {
-                let imgBase64 = null;
+                let imgData = null;
                 if(mode === 'image') {
                     const file = document.getElementById(src === 'file' ? 'input-file' : 'input-camera').files[0];
-                    if(file) {
-                        imgBase64 = await new Promise(r => {
-                            const rd = new FileReader();
-                            rd.onload = () => r(rd.result.split(',')[1]);
-                            rd.readAsDataURL(file);
-                        });
-                    }
+                    if(file) imgData = await new Promise(r => {
+                        const reader = new FileReader();
+                        reader.onload = () => r(reader.result.split(',')[1]);
+                        reader.readAsDataURL(file);
+                    });
                 }
 
-                const res = await fetch('/api/analyze', {
+                const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: input.value, imageData: imgBase64 })
+                    body: JSON.stringify({ prompt: input.value, imageData: imgData })
                 });
 
-                if(!res.ok) throw new Error("Sync Failed");
-                const ai = await res.json();
-                
-                setTimeout(() => {
-                    playSnd('snd-result');
-                    document.getElementById('ui-loader').classList.add('hidden');
-                    document.getElementById('ui-result').classList.remove('hidden');
-                    
-                    const pos = ai.pos_score || 0;
-                    const neg = ai.neg_score || 0;
-                    const unc = ai.uncertain_score || (100 - (pos + neg));
+                if (!response.ok) throw new Error("HTTP Error");
 
-                    document.getElementById('pos-val').innerText = pos;
-                    document.getElementById('unc-val').innerText = unc;
-                    document.getElementById('neg-val').innerText = neg;
-                    document.getElementById('bar-pos').style.width = pos + '%';
-                    document.getElementById('bar-unc').style.width = unc + '%';
-                    document.getElementById('bar-neg').style.width = neg + '%';
-
-                    const dec = document.getElementById('res-decision');
-                    dec.innerText = ai.decision;
-                    dec.style.color = ai.decision === "YES" ? '#00ff88' : '#ff4d4d';
-                    document.getElementById('res-summary').innerText = ai.summary;
-                    
-                    saveHistory(input.value || "Visual Scan", ai.decision);
-                }, 1500);
-            } catch (e) { alert("Neural Error: Check Connection"); location.reload(); }
+                const ai = await response.json();
+                showResult(ai);
+            } catch (err) {
+                console.error(err);
+                alert("Connection failed. Check GEMINI_API_KEY in Vercel Settings.");
+                location.reload();
+            }
         }
 
-        function saveHistory(t, r) {
-            let h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
-            h.unshift({ t, r });
-            localStorage.setItem('ai_logs_v3', JSON.stringify(h.slice(0, 5)));
-            renderHistory();
-        }
+        function showResult(ai) {
+            document.getElementById('ui-loader').classList.add('hidden');
+            document.getElementById('ui-result').classList.remove('hidden');
+            
+            const pos = ai.pos_score || 0;
+            const neg = ai.neg_score || 0;
+            const unc = ai.uncertain_score || (100 - (pos + neg));
 
-        function renderHistory() {
-            const box = document.getElementById('history-box');
-            const h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
-            box.innerHTML = h.map(i => `
-                <div class="p-3 rounded-xl flex justify-between items-center border border-white/5 bg-zinc-950/50">
-                    <span class="text-[9px] text-zinc-500 uppercase font-bold truncate w-32">${i.t}</span>
-                    <span class="text-[10px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
-                </div>
-            `).join('');
+            document.getElementById('bar-pos').style.width = pos + '%';
+            document.getElementById('bar-unc').style.width = unc + '%';
+            document.getElementById('bar-neg').style.width = neg + '%';
+
+            const dec = document.getElementById('res-decision');
+            dec.innerText = ai.decision;
+            dec.className = `text-7xl font-black mb-6 vision-font italic ${ai.decision === 'YES' ? 'text-emerald-500' : 'text-rose-500'}`;
+            document.getElementById('res-summary').innerText = ai.summary;
+            if(navigator.vibrate) navigator.vibrate(100);
         }
     </script>
 </body>
