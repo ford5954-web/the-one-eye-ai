@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>THE ONE EYE AI | Ultimate Analysis Edition</title>
+    
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2592/2592223.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;700;900&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+        .vision-font { font-family: 'Syncopate', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        
+        /* تصميم العين العبقرية */
+        .eye-container {
+            width: 140px; height: 80px; background: #050505; border-radius: 60% 10%;
+            border: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; transform: rotate(45deg);
+        }
+        .pupil {
+            width: 35px; height: 35px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 30px #fff; transition: 0.3s;
+        }
+        .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
+        @keyframes scan { from { transform: translate(-20px, -20px); } to { transform: translate(20px, 20px); } }
+        
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* تأثير التوهج للأشرطة */
+        .bar-glow-pos { shadow-[0_0_15px_#10b981]; }
+        .bar-glow-unc { shadow-[0_0_15px_#f59e0b]; }
+        .bar-glow-neg { shadow-[0_0_15px_#e11d48]; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="legal-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black">
+        <div class="glass p-10 rounded-[3rem] max-w-md w-full text-center border-t-4 border-emerald-500 shadow-2xl">
+            <h2 class="vision-font text-lg text-emerald-500 mb-6 tracking-widest">AI PROTOCOL</h2>
+            <div class="text-[11px] text-zinc-500 leading-relaxed space-y-4 mb-8 text-left h-40 overflow-y-auto font-mono border-b border-white/5 pb-4">
+                <p>> Initializing Face & Code recognition system...</p>
+                <p>> Verification: AI will analyze facial micro-expressions and decode QR/Barcodes.</p>
+                <p>> Accuracy: Results include Positive, Negative, and Doubtful metrics.</p>
+                <p>> Privacy: No biometric data is stored.</p>
+            </div>
+            <button onclick="acceptLegal()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-emerald-400 transition-all">I Accept & Start</button>
+        </div>
+    </div>
+
+    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000">
+        <header class="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-black/50 backdrop-blur-md z-50">
+            <span class="vision-font text-[10px] tracking-[0.4em] text-emerald-500">THE_ONE_EYE_ULTIMATE</span>
+            <button onclick="closeApp()" class="text-[10px] font-black text-zinc-600 uppercase hover:text-red-500 transition-colors tracking-widest">Terminate</button>
+        </header>
+
+        <main class="max-w-lg mx-auto p-6 space-y-12">
+            <section id="ui-main" class="space-y-10 py-10 fade-in">
+                <div class="flex flex-col items-center text-center">
+                    <div class="eye-container mb-12" id="main-eye"><div class="pupil"></div></div>
+                    <h1 class="vision-font text-2xl italic tracking-tighter">MULTI_SCAN_ENGINE</h1>
+                    <p class="text-[9px] text-zinc-500 mt-4 uppercase tracking-[0.3em]">Face Metrics | QR & Barcode | Logic Analysis</p>
+                </div>
+
+                <div class="glass p-2 rounded-[2.5rem]">
+                    <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none placeholder-zinc-800" placeholder="Ask or Describe Target...">
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-8 rounded-[2.5rem] font-black text-2xl tracking-widest shadow-2xl active:scale-95 transition-all">EXECUTE_SCAN</button>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="triggerInput('file')" class="glass p-5 rounded-3xl flex flex-col items-center gap-2 group border-white/5 hover:border-emerald-500/50 transition-all">
+                            <span class="text-xs font-black uppercase tracking-widest">Upload Data</span>
+                            <span class="text-[8px] text-zinc-600 font-bold uppercase group-hover:text-emerald-500">Face / QR / Barcode</span>
+                        </button>
+                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-3xl flex flex-col items-center gap-2 group border-white/5 hover:border-emerald-500/50 transition-all">
+                            <span class="text-xs font-black uppercase tracking-widest">Live Lens</span>
+                            <span class="text-[8px] text-zinc-600 font-bold uppercase group-hover:text-emerald-500">Professional Scan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-white/5">
+                    <p class="text-[9px] font-black text-zinc-700 uppercase tracking-[0.4em] mb-4">Session Archive</p>
+                    <div id="history-box" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <section id="ui-loader" class="hidden py-20 text-center fade-in">
+                <div class="flex justify-center mb-10"><div class="eye-container scanning"><div class="pupil"></div></div></div>
+                <div class="text-[10px] font-mono text-emerald-500 tracking-widest animate-pulse">ANALYZING_MICRO_EXPRESSIONS_AND_CODES...</div>
+            </section>
+
+            <section id="ui-result" class="hidden space-y-8 pb-20 fade-in">
+                <div id="res-card" class="p-10 rounded-[4rem] border border-white/10 bg-zinc-950 text-center shadow-2xl transition-all">
+                    <h2 id="res-decision" class="text-8xl font-black mb-10 vision-font italic tracking-tighter"></h2>
+                    
+                    <div class="space-y-4 mb-10">
+                        <div class="flex justify-between text-[9px] font-mono font-black uppercase tracking-widest px-1">
+                            <span class="text-emerald-500">Positive: <span id="pos-val">0</span>%</span>
+                            <span class="text-amber-500">Doubtful: <span id="unc-val">0</span>%</span>
+                            <span class="text-rose-500">Negative: <span id="neg-val">0</span>%</span>
+                        </div>
+                        
+                        <div class="w-full h-5 bg-black rounded-full overflow-hidden flex border border-white/10 p-[2px] shadow-inner">
+                            <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.5)]" style="width: 0%"></div>
+                            <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000 shadow-[0_0_15px_rgba(245,158,11,0.5)]" style="width: 0%"></div>
+                            <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000 shadow-[0_0_15px_rgba(225,29,72,0.5)]" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-left space-y-4 border-t border-white/5 pt-6">
+                        <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-[0.3em]">AI Synthesis Report:</p>
+                        <p id="res-summary" class="text-sm leading-relaxed text-zinc-400 italic font-light"></p>
+                    </div>
+                </div>
+                <button onclick="location.reload()" class="w-full p-8 glass rounded-[2.5rem] font-black uppercase text-emerald-500 tracking-widest border border-emerald-900/20">New Operation</button>
+            </section>
+        </main>
+    </div>
+
+    <input type="file" id="input-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
+    <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
+
+    <script>
+        window.onload = () => {
+            renderHistory();
+            if (localStorage.getItem('eye_protocol_v3') === 'agreed') showApp();
+            else document.getElementById('legal-modal').classList.remove('hidden');
+        };
+
+        function acceptLegal() {
+            localStorage.setItem('eye_protocol_v3', 'agreed');
+            document.getElementById('legal-modal').classList.add('hidden');
+            showApp();
+        }
+
+        function showApp() {
+            const app = document.getElementById('app-content');
+            app.classList.remove('hidden');
+            setTimeout(() => app.style.opacity = '1', 100);
+        }
+
+        function closeApp() { if(confirm("Terminate Neural Link?")) window.location.href = "about:blank"; }
+
+        function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
+
+        async function process(mode, src) {
+            const input = document.getElementById('user-input');
+            document.getElementById('ui-main').classList.add('hidden');
+            document.getElementById('ui-loader').classList.remove('hidden');
+
+            try {
+                let imgBase64 = null;
+                if(mode === 'image') {
+                    const file = document.getElementById(src === 'file' ? 'input-file' : 'input-camera').files[0];
+                    if(file) {
+                        imgBase64 = await new Promise(r => {
+                            const rd = new FileReader();
+                            rd.onload = () => r(rd.result.split(',')[1]);
+                            rd.readAsDataURL(file);
+                        });
+                    }
+                }
+
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        prompt: `Perform professional analysis: 
+                        1. Facial micro-expressions & reliability. 
+                        2. Extract info from Barcode/QR if present. 
+                        3. Compare Logic.
+                        Target: ${input.value || "Visual Data"}. 
+                        Format: JSON ONLY. Fields: decision (YES/NO), pos_score, neg_score, uncertain_score, summary.`, 
+                        imageData: imgBase64 
+                    })
+                });
+
+                const data = await res.json();
+                const ai = data.candidates ? JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, "")) : data;
+
+                updateUI(ai, input.value || "Scan Task");
+            } catch (e) { 
+                alert("Protocol Error. Restarting System..."); 
+                location.reload(); 
+            }
+        }
+
+        function updateUI(ai, topic) {
+            setTimeout(() => {
+                document.getElementById('ui-loader').classList.add('hidden');
+                document.getElementById('ui-result').classList.remove('hidden');
+                
+                // تحديث القيم النصية
+                document.getElementById('pos-val').innerText = ai.pos_score || 0;
+                document.getElementById('neg-val').innerText = ai.neg_score || 0;
+                document.getElementById('unc-val').innerText = ai.uncertain_score || 0;
+
+                // تحديث أشرطة المقارنة الثلاثية
+                document.getElementById('bar-pos').style.width = `${ai.pos_score}%`;
+                document.getElementById('bar-neg').style.width = `${ai.neg_score}%`;
+                document.getElementById('bar-unc').style.width = `${ai.uncertain_score}%`;
+
+                const dec = document.getElementById('res-decision');
+                dec.innerText = ai.decision;
+                dec.style.color = ai.decision === "YES" ? '#00ff88' : '#ff4d4d';
+                
+                document.getElementById('res-summary').innerText = ai.summary;
+                
+                saveHistory(topic, ai.decision);
+            }, 1500);
+        }
+
+        function saveHistory(t, r) {
+            let h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
+            h.unshift({ t, r });
+            localStorage.setItem('ai_logs_v3', JSON.stringify(h.slice(0, 5)));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const box = document.getElementById('history-box');
+            const h = JSON.parse(localStorage.getItem('ai_logs_v3') || '[]');
+            box.innerHTML = h.map(i => `
+                <div class="p-4 rounded-xl flex justify-between items-center border border-white/5 bg-zinc-950/50">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold truncate w-40">${i.t}</span>
+                    <span class="text-[10px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
