@@ -1,53 +1,39 @@
-export default async function handler(req, res) {
-    // 1. إعدادات الوصول (CORS)
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+export const config = {
+  runtime: 'edge', // هذا السطر يجعل الكود يعمل في أقرب سيرفر للمستخدم (Edge)
+};
 
-    if (req.method === 'OPTIONS') return res.status(200).end();
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST method' });
-
-    // 2. التحقق من المفتاح والبيانات
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return res.status(500).json({ error: 'API_KEY_MISSING' });
+export default async function handler(req) {
+    if (req.method === 'OPTIONS') {
+        return new Response(null, { status: 200, headers: { 
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Content-Type'
+        }});
     }
 
-    const { prompt, imageData } = req.body;
-
     try {
-        // 3. الاتصال بجوجل (باستخدام fetch المدمج في Node.js 18+)
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        
-        const payload = {
-            contents: [{
-                parts: [
-                    { text: prompt + " . Return JSON only: {\"decision\":\"YES/NO\",\"pos_score\":50,\"neg_score\":50,\"summary\":\"...\",\"advice\":\"...\"}" },
-                    ...(imageData ? [{ inline_data: { mime_type: "image/jpeg", data: imageData } }] : [])
-                ]
-            }]
-        };
+        const { prompt, imageData } = await req.json();
+        const apiKey = process.env.GEMINI_API_KEY;
 
-        const response = await fetch(apiUrl, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                contents: [{
+                    parts: [
+                        { text: prompt + " . Return JSON only." },
+                        ...(imageData ? [{ inline_data: { mime_type: "image/jpeg", data: imageData } }] : [])
+                    ]
+                }]
+            })
         });
 
         const data = await response.json();
-
-        // 4. إرسال النتيجة بأمان
-        if (data.error) {
-            return res.status(400).json({ error: 'AI_PROVIDER_ERROR', details: data.error.message });
-        }
-
-        return res.status(200).json(data);
-
-    } catch (error) {
-        console.error('Crash Detail:', error.message);
-        return res.status(500).json({ 
-            error: 'SERVER_CRASHED', 
-            msg: error.message 
+        return new Response(JSON.stringify(data), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
+    } catch (error) {
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
 }
