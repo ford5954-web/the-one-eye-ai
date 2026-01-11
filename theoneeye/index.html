@@ -2,123 +2,207 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE ONE EYE AI | Fixed Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>THE ONE EYE AI | Imperial Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         .vision-font { font-family: 'Syncopate', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .eye-container { width: 120px; height: 70px; background: #0a0a0a; border-radius: 60% 10%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; overflow: hidden; transition: 0.5s; }
-        .pupil { width: 30px; height: 30px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; }
-        .scanning .pupil { animation: scan 1s infinite alternate; background: #00ff88; box-shadow: 0 0 35px #00ff88; }
-        @keyframes scan { from { transform: translate(-15px, -15px); } to { transform: translate(15px, 15px); } }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .eye-container { width: 130px; height: 75px; background: #050505; border-radius: 60% 10%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; overflow: hidden; transition: 0.5s; }
+        .pupil { width: 32px; height: 32px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; }
+        .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
+        @keyframes scan { from { transform: translate(-18px, -18px); } to { transform: translate(18px, 18px); } }
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <div id="app-content" class="flex-grow flex flex-col p-6 space-y-8">
-        <header class="flex justify-between items-center opacity-50">
-            <span class="vision-font text-[9px] tracking-[0.3em]">ONE_EYE_CORE_V4</span>
-            <span class="text-[9px] font-mono" id="status-tag">SYSTEM_READY</span>
+    <div id="legal-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black">
+        <div class="glass p-10 rounded-[3rem] max-w-md w-full text-center border-t-4 border-emerald-500 shadow-2xl">
+            <h2 class="vision-font text-emerald-500 mb-6 tracking-widest uppercase">Protocol_V4</h2>
+            <p class="text-[10px] text-zinc-500 mb-8 font-mono">By entering, you enable neural biometric analysis and sensory feedback. Proceed with caution.</p>
+            <button onclick="acceptLegal()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest active:scale-95 transition-all">Connect_Neural_Link</button>
+        </div>
+    </div>
+
+    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000 flex-grow flex flex-col">
+        <header class="p-6 flex justify-between items-center border-b border-white/5 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+            <span class="vision-font text-[9px] tracking-[0.4em] text-emerald-500">THE_ONE_EYE_CORE</span>
+            <span class="text-[8px] font-mono text-zinc-600 uppercase" id="sys-status">Link_Active</span>
         </header>
 
-        <main class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full space-y-10">
-            <div id="ui-main" class="space-y-10 text-center">
-                <div class="flex justify-center"><div class="eye-container" id="main-eye"><div class="pupil"></div></div></div>
-                <h1 class="vision-font text-xl italic tracking-tighter text-emerald-500">NEURAL_SCANNER</h1>
-                <input id="user-input" type="text" class="w-full p-6 glass rounded-3xl text-center outline-none focus:border-emerald-500 transition-all" placeholder="Enter query...">
-                <div class="grid grid-cols-1 gap-4">
-                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-6 rounded-3xl font-black tracking-widest active:scale-95 transition-all">EXECUTE</button>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="triggerInput('file')" class="glass p-4 rounded-2xl text-[9px] font-bold uppercase">Upload</button>
-                        <button onclick="triggerInput('camera')" class="glass p-4 rounded-2xl text-[9px] font-bold uppercase">Camera</button>
+        <main class="max-w-lg mx-auto p-6 w-full space-y-12 flex-grow flex flex-col justify-center">
+            
+            <section id="ui-main" class="space-y-10 fade-in">
+                <div class="flex flex-col items-center">
+                    <div class="eye-container mb-8" id="main-eye"><div class="pupil"></div></div>
+                    <h1 class="vision-font text-xl italic text-center">BIOMETRIC_VISION</h1>
+                </div>
+
+                <div class="glass p-2 rounded-[2.5rem]">
+                    <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none placeholder-zinc-800" placeholder="Type prompt or scan...">
+                </div>
+
+                <div class="space-y-4">
+                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-7 rounded-[2.5rem] font-black text-xl tracking-widest shadow-[0_0_30px_rgba(16,185,129,0.3)] active:scale-95 transition-all">EXECUTE_SCAN</button>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="triggerInput('file')" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase tracking-widest text-zinc-400">Upload_Data</button>
+                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase tracking-widest text-emerald-500/50">Live_Lens</button>
                     </div>
                 </div>
-            </div>
+                <div id="history-box" class="pt-6 border-t border-white/5 space-y-2"></div>
+            </section>
 
-            <div id="ui-loader" class="hidden text-center space-y-6">
-                <div class="flex justify-center"><div class="eye-container scanning"><div class="pupil"></div></div></div>
-                <p class="text-[10px] font-mono text-emerald-500 animate-pulse">DECRYPTING_PACKETS...</p>
-            </div>
+            <section id="ui-loader" class="hidden py-20 text-center fade-in">
+                <div class="flex justify-center mb-10"><div class="eye-container scanning"><div class="pupil"></div></div></div>
+                <div class="text-[10px] font-mono text-emerald-500 tracking-[0.5em] animate-pulse uppercase">Neural_Processing...</div>
+            </section>
 
-            <div id="ui-result" class="hidden space-y-6">
-                <div class="p-8 rounded-[3rem] glass border-emerald-500/20 text-center">
-                    <h2 id="res-decision" class="text-7xl font-black mb-6 vision-font italic"></h2>
-                    <div class="w-full h-4 bg-black/50 rounded-full flex overflow-hidden p-1 border border-white/5 mb-6">
-                        <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000"></div>
-                        <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000"></div>
-                        <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000"></div>
+            <section id="ui-result" class="hidden space-y-6 fade-in pb-10">
+                <div class="p-8 rounded-[3.5rem] glass border-emerald-500/20 text-center shadow-2xl relative overflow-hidden">
+                    <h2 id="res-decision" class="text-7xl font-black mb-10 vision-font italic tracking-tighter"></h2>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between text-[9px] font-mono uppercase px-1">
+                            <span class="text-emerald-500">Pos: <span id="pos-val">0</span>%</span>
+                            <span class="text-amber-500">Unc: <span id="unc-val">0</span>%</span>
+                            <span class="text-rose-500">Neg: <span id="neg-val">0</span>%</span>
+                        </div>
+                        <div class="w-full h-4 bg-black rounded-full flex overflow-hidden border border-white/5 p-[2px]">
+                            <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000 shadow-lg"></div>
+                            <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000 shadow-lg"></div>
+                            <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000 shadow-lg"></div>
+                        </div>
                     </div>
-                    <p id="res-summary" class="text-xs text-zinc-400 leading-relaxed italic"></p>
+                    <p id="res-summary" class="text-xs leading-relaxed text-zinc-400 italic mb-8 px-4"></p>
+                    
+                    <button onclick="downloadReport()" class="w-full p-4 mb-2 border border-white/5 rounded-2xl text-[9px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-all flex items-center justify-center gap-2">
+                        Download_Report_TXT
+                    </button>
                 </div>
-                <button onclick="location.reload()" class="w-full p-6 glass rounded-3xl font-bold uppercase text-emerald-500">Dismiss</button>
-            </div>
+                <button onclick="location.reload()" class="w-full p-7 glass rounded-[2.5rem] font-black uppercase text-emerald-500 tracking-widest">New_Inquiry</button>
+            </section>
         </main>
     </div>
 
-    <audio id="snd-scan" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+    <audio id="snd-scan" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="snd-result" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+    
     <input type="file" id="input-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
     <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
 
     <script>
+        let currentResult = null;
+
+        window.onload = () => {
+            renderHistory();
+            if (localStorage.getItem('eye_v4_auth') === 'true') showApp();
+            else document.getElementById('legal-modal').classList.remove('hidden');
+        };
+
+        function showApp() {
+            const app = document.getElementById('app-content');
+            app.classList.remove('hidden');
+            setTimeout(() => app.style.opacity = '1', 100);
+        }
+
+        function acceptLegal() {
+            localStorage.setItem('eye_v4_auth', 'true');
+            document.getElementById('legal-modal').classList.add('hidden');
+            showApp();
+        }
+
+        function playEffect(type) {
+            const snd = document.getElementById(type === 'scan' ? 'snd-scan' : 'snd-result');
+            snd.currentTime = 0;
+            snd.play().catch(e => {});
+            if(navigator.vibrate) navigator.vibrate(type === 'scan' ? [30, 30] : 100);
+        }
+
         function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
 
         async function process(mode, src) {
+            playEffect('scan');
             const input = document.getElementById('user-input');
-            const loader = document.getElementById('ui-loader');
-            const main = document.getElementById('ui-main');
-
-            main.classList.add('hidden');
-            loader.classList.remove('hidden');
-            document.getElementById('snd-scan').play().catch(() => {});
+            document.getElementById('ui-main').classList.add('hidden');
+            document.getElementById('ui-loader').classList.remove('hidden');
 
             try {
-                let imgData = null;
+                let imgBase64 = null;
                 if(mode === 'image') {
                     const file = document.getElementById(src === 'file' ? 'input-file' : 'input-camera').files[0];
-                    if(file) imgData = await new Promise(r => {
-                        const reader = new FileReader();
-                        reader.onload = () => r(reader.result.split(',')[1]);
-                        reader.readAsDataURL(file);
+                    if(file) imgBase64 = await new Promise(r => {
+                        const rd = new FileReader();
+                        rd.onload = () => r(rd.result.split(',')[1]);
+                        rd.readAsDataURL(file);
                     });
                 }
 
-                const response = await fetch('/api/analyze', {
+                const res = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: input.value, imageData: imgData })
+                    body: JSON.stringify({ prompt: input.value, imageData: imgBase64 })
                 });
 
-                if (!response.ok) throw new Error("HTTP Error");
+                if(!res.ok) throw new Error("Connection_Fault");
+                const ai = await res.json();
+                
+                setTimeout(() => {
+                    playEffect('result');
+                    currentResult = ai;
+                    document.getElementById('ui-loader').classList.add('hidden');
+                    document.getElementById('ui-result').classList.remove('hidden');
+                    
+                    const p = ai.pos_score || 0;
+                    const n = ai.neg_score || 0;
+                    const u = ai.uncertain_score || (100 - (p + n));
 
-                const ai = await response.json();
-                showResult(ai);
-            } catch (err) {
-                console.error(err);
-                alert("Connection failed. Check GEMINI_API_KEY in Vercel Settings.");
-                location.reload();
-            }
+                    document.getElementById('pos-val').innerText = p;
+                    document.getElementById('unc-val').innerText = u;
+                    document.getElementById('neg-val').innerText = n;
+                    document.getElementById('bar-pos').style.width = p + '%';
+                    document.getElementById('bar-unc').style.width = u + '%';
+                    document.getElementById('bar-neg').style.width = n + '%';
+
+                    const dec = document.getElementById('res-decision');
+                    dec.innerText = ai.decision;
+                    dec.style.color = ai.decision === 'YES' ? '#00ff88' : (ai.decision === 'NO' ? '#ff4d4d' : '#f59e0b');
+                    document.getElementById('res-summary').innerText = ai.summary;
+                    
+                    saveHistory(input.value || "Neural Scan", ai.decision);
+                }, 1500);
+            } catch (e) { alert("NEURAL_LINK_FAILURE: Check Vercel Logs"); location.reload(); }
         }
 
-        function showResult(ai) {
-            document.getElementById('ui-loader').classList.add('hidden');
-            document.getElementById('ui-result').classList.remove('hidden');
-            
-            const pos = ai.pos_score || 0;
-            const neg = ai.neg_score || 0;
-            const unc = ai.uncertain_score || (100 - (pos + neg));
+        function downloadReport() {
+            if(!currentResult) return;
+            const content = `ONE EYE AI REPORT\nDate: ${new Date().toLocaleString()}\nDecision: ${currentResult.decision}\nSummary: ${currentResult.summary}`;
+            const blob = new Blob([content], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Report_${Date.now()}.txt`;
+            a.click();
+        }
 
-            document.getElementById('bar-pos').style.width = pos + '%';
-            document.getElementById('bar-unc').style.width = unc + '%';
-            document.getElementById('bar-neg').style.width = neg + '%';
+        function saveHistory(t, r) {
+            let h = JSON.parse(localStorage.getItem('eye_logs_v4') || '[]');
+            h.unshift({ t, r });
+            localStorage.setItem('eye_logs_v4', JSON.stringify(h.slice(0, 3)));
+            renderHistory();
+        }
 
-            const dec = document.getElementById('res-decision');
-            dec.innerText = ai.decision;
-            dec.className = `text-7xl font-black mb-6 vision-font italic ${ai.decision === 'YES' ? 'text-emerald-500' : 'text-rose-500'}`;
-            document.getElementById('res-summary').innerText = ai.summary;
-            if(navigator.vibrate) navigator.vibrate(100);
+        function renderHistory() {
+            const h = JSON.parse(localStorage.getItem('eye_logs_v4') || '[]');
+            document.getElementById('history-box').innerHTML = h.map(i => `
+                <div class="p-3 rounded-xl flex justify-between items-center bg-white/5 border border-white/5">
+                    <span class="text-[8px] font-bold text-zinc-500 uppercase truncate w-32">${i.t}</span>
+                    <span class="text-[8px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
+                </div>
+            `).join('');
         }
     </script>
 </body>
