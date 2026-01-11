@@ -1,14 +1,14 @@
 {
-  "name": "THE ONE EYE AI",
+  "name": "The One Eye AI",
   "short_name": "OneEye",
-  "description": "Professional Facial and Code Analysis AI",
+  "description": "Imperial Neural Scanning System",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#10b981",
+  "theme_color": "#00ff88",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2592/2592223.png",
+      "src": "https://i.ibb.co/v6X8vC7/one-eye-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
