@@ -15,7 +15,7 @@
 • ​Deployment: Vercel (PWA Optimized).
 ​📦 Installation & Setup
 1. Clone the Repository:
-git clone https://github.com/YOUR_USERNAME/the-one-eye-ai.git
+git clone https://github.com/ford5954-web/the-one-eye-ai.git
 2. Environment Variables:
 Create a variable in your Vercel Dashboard:
 • ​GEMINI_API_KEY: Your official Google AI Studio key.
