@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE ONE EYE AI | Imperial Edition</title>
+    <title>THE ONE EYE AI | Global Imperial Edition</title>
     
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,259 +21,233 @@
         .pupil { width: 32px; height: 32px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; }
         .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
         @keyframes scan { from { transform: translate(-18px, -18px); } to { transform: translate(18px, 18px); } }
-        .fade-in { animation: fadeIn 0.8s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .star { cursor: pointer; }
+        .star { cursor: pointer; transition: 0.3s; }
+        select { appearance: none; background: transparent; border: none; color: #10b981; font-family: 'Syncopate', sans-serif; font-size: 8px; cursor: pointer; outline: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <div id="splash-screen" class="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center transition-opacity duration-1000">
-        <div class="eye-container scanning mb-6" style="width: 150px; height: 85px;">
-            <div class="pupil"></div>
-        </div>
-        <div class="vision-font text-emerald-500 tracking-[0.8em] text-[10px] animate-pulse uppercase">Initializing_Eye_V4</div>
-    </div>
-
-    <div id="legal-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black">
-        <div class="glass p-10 rounded-[3rem] max-w-md w-full text-center border-t-4 border-emerald-500 shadow-2xl">
-            <h2 class="vision-font text-emerald-500 mb-6 tracking-widest uppercase">Protocol_Access</h2>
-            <p class="text-[10px] text-zinc-500 mb-8 font-mono">Neural link requires biometric authorization. Sensory feedback enabled.</p>
-            <button onclick="acceptLegal()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest active:scale-95 transition-all">Accept_Terms</button>
-        </div>
+        <div class="eye-container scanning mb-6" style="width: 150px; height: 85px;"><div class="pupil"></div></div>
+        <div class="vision-font text-emerald-500 tracking-[0.8em] text-[10px] animate-pulse">SYSTEM_BOOT_V4</div>
     </div>
 
     <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000 flex-grow flex flex-col">
         <header class="p-6 flex justify-between items-center border-b border-white/5 bg-black/50 backdrop-blur-md sticky top-0 z-50">
-            <span class="vision-font text-[9px] tracking-[0.4em] text-emerald-500">THE_ONE_EYE_CORE</span>
-            <span class="text-[8px] font-mono text-zinc-600 uppercase" id="sys-status">Neural_Link_OK</span>
+            <span class="vision-font text-[9px] tracking-[0.4em] text-emerald-500">ONE_EYE_AI</span>
+            
+            <div class="flex items-center gap-4">
+                <div class="glass px-3 py-1 rounded-full flex items-center gap-2">
+                    <span class="text-[8px] opacity-30">🌐</span>
+                    <select id="lang-select" onchange="changeLanguage()">
+                        <option value="en-US">EN</option>
+                        <option value="ar-SA">AR</option>
+                        <option value="fr-FR">FR</option>
+                        <option value="es-ES">ES</option>
+                        <option value="de-DE">DE</option>
+                        <option value="zh-CN">ZH</option>
+                        <option value="ja-JP">JA</option>
+                        <option value="ru-RU">RU</option>
+                        <option value="pt-PT">PT</option>
+                        <option value="it-IT">IT</option>
+                    </select>
+                </div>
+                <button onclick="toggleVoice()" id="voice-icon" class="text-xs opacity-50">🔊</button>
+            </div>
         </header>
 
         <main class="max-w-lg mx-auto p-6 w-full space-y-12 flex-grow flex flex-col justify-center">
             
-            <section id="ui-main" class="space-y-10 fade-in">
+            <section id="ui-main" class="space-y-10">
                 <div class="flex flex-col items-center">
-                    <div class="eye-container mb-8" id="main-eye"><div class="pupil"></div></div>
-                    <h1 class="vision-font text-xl italic text-center">BIOMETRIC_VISION</h1>
+                    <div class="eye-container mb-8"><div class="pupil"></div></div>
+                    <h1 class="vision-font text-xl italic text-center" id="lbl-title">NEURAL_SCAN</h1>
                 </div>
 
                 <div class="glass p-2 rounded-[2.5rem]">
-                    <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none placeholder-zinc-800" placeholder="Awaiting command...">
+                    <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none" placeholder="...">
                 </div>
 
                 <div class="space-y-4">
-                    <button onclick="process('text')" class="w-full bg-emerald-500 text-black p-7 rounded-[2.5rem] font-black text-xl tracking-widest shadow-[0_0_30px_rgba(16,185,129,0.3)] active:scale-95 transition-all">EXECUTE_SCAN</button>
+                    <button onclick="process('text')" id="btn-execute" class="w-full bg-emerald-500 text-black p-7 rounded-[2.5rem] font-black text-xl tracking-widest active:scale-95 transition-all shadow-[0_0_30px_rgba(16,185,129,0.2)]">EXECUTE</button>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="triggerInput('file')" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase tracking-widest text-zinc-400">Upload_Data</button>
-                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase tracking-widest text-emerald-500/50">Live_Lens</button>
+                        <button onclick="triggerInput('file')" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase tracking-widest text-zinc-500">Upload</button>
+                        <button onclick="triggerInput('camera')" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase tracking-widest text-emerald-500/50">Camera</button>
                     </div>
                 </div>
                 <div id="history-box" class="pt-6 border-t border-white/5 space-y-2"></div>
             </section>
 
-            <section id="ui-loader" class="hidden py-20 text-center fade-in">
+            <section id="ui-loader" class="hidden py-20 text-center">
                 <div class="flex justify-center mb-10"><div class="eye-container scanning"><div class="pupil"></div></div></div>
-                <div class="text-[10px] font-mono text-emerald-500 tracking-[0.5em] animate-pulse uppercase">Neural_Processing...</div>
+                <div class="text-[10px] font-mono text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Processing_Neural_Data...</div>
             </section>
 
-            <section id="ui-result" class="hidden space-y-6 fade-in pb-10">
-                <div class="p-8 rounded-[3.5rem] glass border-emerald-500/20 text-center shadow-2xl relative overflow-hidden">
+            <section id="ui-result" class="hidden space-y-6 pb-10">
+                <div class="p-8 rounded-[3.5rem] glass border-emerald-500/20 text-center relative overflow-hidden">
                     <h2 id="res-decision" class="text-7xl font-black mb-10 vision-font italic tracking-tighter"></h2>
-                    
-                    <div class="space-y-4 mb-8">
-                        <div class="flex justify-between text-[9px] font-mono uppercase px-1">
-                            <span class="text-emerald-500">Pos: <span id="pos-val">0</span>%</span>
-                            <span class="text-amber-500">Unc: <span id="unc-val">0</span>%</span>
-                            <span class="text-rose-500">Neg: <span id="neg-val">0</span>%</span>
-                        </div>
-                        <div class="w-full h-4 bg-black rounded-full flex overflow-hidden border border-white/5 p-[2px]">
-                            <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000 shadow-lg"></div>
-                            <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000 shadow-lg"></div>
-                            <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000 shadow-lg"></div>
-                        </div>
+                    <div class="w-full h-3 bg-black rounded-full flex overflow-hidden border border-white/5 p-[1px] mb-8">
+                        <div id="bar-pos" class="h-full bg-emerald-500 transition-all duration-1000"></div>
+                        <div id="bar-unc" class="h-full bg-amber-500 transition-all duration-1000"></div>
+                        <div id="bar-neg" class="h-full bg-rose-600 transition-all duration-1000"></div>
                     </div>
-                    <p id="res-summary" class="text-xs leading-relaxed text-zinc-400 italic mb-8 px-4"></p>
+                    <p id="res-summary" class="text-xs text-zinc-400 italic mb-8"></p>
                     
-                    <div class="mb-8 p-4 border-t border-white/5">
-                        <p class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest mb-3">Rate_AI_Accuracy</p>
-                        <div class="flex justify-center gap-4" id="star-rating">
-                            <button onclick="submitRating(1)" class="star text-zinc-700 text-2xl transition-all hover:scale-125">★</button>
-                            <button onclick="submitRating(2)" class="star text-zinc-700 text-2xl transition-all hover:scale-125">★</button>
-                            <button onclick="submitRating(3)" class="star text-zinc-700 text-2xl transition-all hover:scale-125">★</button>
-                            <button onclick="submitRating(4)" class="star text-zinc-700 text-2xl transition-all hover:scale-125">★</button>
-                            <button onclick="submitRating(5)" class="star text-zinc-700 text-2xl transition-all hover:scale-125">★</button>
-                        </div>
-                        <p id="rating-msg" class="text-[8px] text-emerald-500 mt-2 opacity-0 transition-opacity uppercase font-bold">Feedback_Recorded</p>
+                    <div class="flex justify-center gap-4 mb-8" id="stars">
+                        <span onclick="rate(1)" class="star text-zinc-800 text-2xl">★</span>
+                        <span onclick="rate(2)" class="star text-zinc-800 text-2xl">★</span>
+                        <span onclick="rate(3)" class="star text-zinc-800 text-2xl">★</span>
+                        <span onclick="rate(4)" class="star text-zinc-800 text-2xl">★</span>
+                        <span onclick="rate(5)" class="star text-zinc-800 text-2xl">★</span>
                     </div>
-
-                    <button onclick="downloadReport()" class="w-full p-4 mb-2 border border-white/5 rounded-2xl text-[9px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-all flex items-center justify-center gap-2">
-                        Download_Report_TXT
-                    </button>
+                    <button onclick="downloadReport()" class="w-full p-4 border border-white/5 rounded-2xl text-[8px] font-bold text-zinc-600 uppercase">Save_Report</button>
                 </div>
-                <button onclick="location.reload()" class="w-full p-7 glass rounded-[2.5rem] font-black uppercase text-emerald-500 tracking-widest">New_Scan</button>
+                <button onclick="location.reload()" class="w-full p-7 glass rounded-[2.5rem] font-black text-emerald-500 uppercase">Dismiss</button>
             </section>
         </main>
     </div>
 
-    <audio id="snd-scan" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
-    <audio id="snd-result" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
-    
     <input type="file" id="input-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
     <input type="file" id="input-camera" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
 
     <script>
         let currentResult = null;
+        let voiceOn = true;
 
         window.onload = () => {
-            // Splash Screen Logic
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.classList.add('hidden'), 1000);
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').remove();
+                    document.getElementById('app-content').classList.remove('hidden');
+                    document.getElementById('app-content').style.opacity = '1';
+                }, 1000);
             }, 2500);
-
             renderHistory();
-            if (localStorage.getItem('eye_v4_auth') === 'true') showApp();
-            else document.getElementById('legal-modal').classList.remove('hidden');
         };
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox-sw.js');
+        function toggleVoice() {
+            voiceOn = !voiceOn;
+            document.getElementById('voice-icon').innerText = voiceOn ? "🔊" : "🔇";
+            document.getElementById('voice-icon').style.opacity = voiceOn ? "1" : "0.3";
         }
 
-        function showApp() {
-            const app = document.getElementById('app-content');
-            app.classList.remove('hidden');
-            setTimeout(() => app.style.opacity = '1', 100);
+        // Cybernetic Voice Effect (Digital Echo)
+        function cyberSpeak(text) {
+            if (!voiceOn) return;
+            window.speechSynthesis.cancel();
+            
+            const lang = document.getElementById('lang-select').value;
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = lang;
+            msg.pitch = 0.5; // High authority pitch
+            msg.rate = 0.85;
+
+            // Echo Effect: Second voice with slight delay and lower pitch
+            const echo = new SpeechSynthesisUtterance(text);
+            echo.lang = lang;
+            echo.pitch = 0.3;
+            echo.rate = 0.85;
+            echo.volume = 0.3;
+
+            window.speechSynthesis.speak(msg);
+            setTimeout(() => window.speechSynthesis.speak(echo), 150);
         }
 
-        function acceptLegal() {
-            localStorage.setItem('eye_v4_auth', 'true');
-            document.getElementById('legal-modal').classList.add('hidden');
-            showApp();
-        }
-
-        // Image Compression Utility
-        async function compressImage(base64Str) {
-            return new Promise((resolve) => {
+        async function compressImage(base64) {
+            return new Promise(r => {
                 const img = new Image();
-                img.src = 'data:image/jpeg;base64,' + base64Str;
+                img.src = 'data:image/jpeg;base64,' + base64;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
                     const ctx = canvas.getContext('2d');
+                    canvas.width = 800;
+                    canvas.height = (img.height / img.width) * 800;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+                    r(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
                 };
             });
         }
 
-        function playEffect(type) {
-            const snd = document.getElementById(type === 'scan' ? 'snd-scan' : 'snd-result');
-            snd.currentTime = 0;
-            snd.play().catch(e => {});
-            if(navigator.vibrate) navigator.vibrate(type === 'scan' ? [30, 30] : 100);
-        }
-
-        function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
-
         async function process(mode, src) {
-            playEffect('scan');
-            const input = document.getElementById('user-input');
             document.getElementById('ui-main').classList.add('hidden');
             document.getElementById('ui-loader').classList.remove('hidden');
+            if(navigator.vibrate) navigator.vibrate([30, 30]);
 
             try {
-                let imgBase64 = null;
+                let imgData = null;
                 if(mode === 'image') {
                     const file = document.getElementById(src === 'file' ? 'input-file' : 'input-camera').files[0];
-                    if(file) {
-                        const rawBase64 = await new Promise(r => {
-                            const rd = new FileReader();
-                            rd.onload = () => r(rd.result.split(',')[1]);
-                            rd.readAsDataURL(file);
-                        });
-                        imgBase64 = await compressImage(rawBase64);
-                    }
+                    const raw = await new Promise(r => {
+                        const reader = new FileReader();
+                        reader.onload = () => r(reader.result.split(',')[1]);
+                        reader.readAsDataURL(file);
+                    });
+                    imgData = await compressImage(raw);
                 }
 
                 const res = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: input.value, imageData: imgBase64 })
+                    body: JSON.stringify({ prompt: document.getElementById('user-input').value, imageData: imgData })
                 });
 
-                if(!res.ok) throw new Error("Sync_Error");
                 const ai = await res.json();
-                showResult(ai, input.value || "Neural Scan");
-            } catch (e) { 
-                alert("PROTOCOL_ERROR: Connection timed out."); 
-                location.reload(); 
-            }
+                currentResult = ai;
+                
+                document.getElementById('ui-loader').classList.add('hidden');
+                document.getElementById('ui-result').classList.remove('hidden');
+                
+                document.getElementById('res-decision').innerText = ai.decision;
+                document.getElementById('res-decision').style.color = ai.decision === 'YES' ? '#00ff88' : '#ff4d4d';
+                document.getElementById('res-summary').innerText = ai.summary;
+                
+                document.getElementById('bar-pos').style.width = (ai.pos_score || 0) + '%';
+                document.getElementById('bar-unc').style.width = (ai.uncertain_score || 0) + '%';
+                document.getElementById('bar-neg').style.width = (ai.neg_score || 0) + '%';
+
+                cyberSpeak(`Status: ${ai.decision}. ${ai.summary}`);
+                saveHistory(ai.decision);
+            } catch (e) { location.reload(); }
         }
 
-        function showResult(ai, topic) {
-            playEffect('result');
-            currentResult = ai;
-            document.getElementById('ui-loader').classList.add('hidden');
-            document.getElementById('ui-result').classList.remove('hidden');
-            
-            const p = ai.pos_score || 0;
-            const n = ai.neg_score || 0;
-            const u = ai.uncertain_score || (100 - (p + n));
-
-            document.getElementById('pos-val').innerText = p;
-            document.getElementById('unc-val').innerText = u;
-            document.getElementById('neg-val').innerText = n;
-            document.getElementById('bar-pos').style.width = p + '%';
-            document.getElementById('bar-unc').style.width = u + '%';
-            document.getElementById('bar-neg').style.width = n + '%';
-
-            const dec = document.getElementById('res-decision');
-            dec.innerText = ai.decision;
-            dec.style.color = ai.decision === 'YES' ? '#00ff88' : (ai.decision === 'NO' ? '#ff4d4d' : '#f59e0b');
-            document.getElementById('res-summary').innerText = ai.summary;
-            
-            saveHistory(topic, ai.decision);
-        }
-
-        function submitRating(stars) {
-            const starButtons = document.querySelectorAll('.star');
-            starButtons.forEach((s, index) => {
-                s.style.color = index < stars ? '#00ff88' : '#1f1f1f';
-            });
-            document.getElementById('rating-msg').style.opacity = '1';
-            if(navigator.vibrate) navigator.vibrate([20, 50, 20]);
+        function rate(s) {
+            const stars = document.querySelectorAll('.star');
+            stars.forEach((st, i) => st.style.color = i < s ? '#00ff88' : '#1a1a1a');
+            if(navigator.vibrate) navigator.vibrate(50);
         }
 
         function downloadReport() {
-            if(!currentResult) return;
-            const content = `ONE EYE AI REPORT\nDate: ${new Date().toLocaleString()}\nDecision: ${currentResult.decision}\nSummary: ${currentResult.summary}`;
-            const blob = new Blob([content], {type: 'text/plain'});
+            const blob = new Blob([`ONE EYE AI REPORT\nDecision: ${currentResult.decision}\nSummary: ${currentResult.summary}`], {type: 'text/plain'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `OneEye_Report_${Date.now()}.txt`;
+            a.download = `Report_${Date.now()}.txt`;
             a.click();
         }
 
-        function saveHistory(t, r) {
-            let h = JSON.parse(localStorage.getItem('eye_logs_v4') || '[]');
-            h.unshift({ t: t.substring(0, 15), r });
-            localStorage.setItem('eye_logs_v4', JSON.stringify(h.slice(0, 3)));
+        function saveHistory(r) {
+            let h = JSON.parse(localStorage.getItem('eye_logs') || '[]');
+            h.unshift({ t: new Date().toLocaleTimeString(), r });
+            localStorage.setItem('eye_logs', JSON.stringify(h.slice(0, 3)));
             renderHistory();
         }
 
         function renderHistory() {
-            const h = JSON.parse(localStorage.getItem('eye_logs_v4') || '[]');
+            const h = JSON.parse(localStorage.getItem('eye_logs') || '[]');
             document.getElementById('history-box').innerHTML = h.map(i => `
-                <div class="p-3 rounded-xl flex justify-between items-center bg-white/5 border border-white/5">
-                    <span class="text-[8px] font-bold text-zinc-500 uppercase truncate w-32">${i.t}</span>
+                <div class="p-3 rounded-xl flex justify-between items-center glass border-white/5">
+                    <span class="text-[8px] opacity-30 uppercase font-bold">${i.t}</span>
                     <span class="text-[8px] font-black ${i.r === 'YES' ? 'text-emerald-500' : 'text-rose-600'}">${i.r}</span>
                 </div>
             `).join('');
+        }
+
+        function triggerInput(id) { document.getElementById(id === 'file' ? 'input-file' : 'input-camera').click(); }
+        
+        function changeLanguage() {
+            const lang = document.getElementById('lang-select').value;
+            // يمكنك هنا إضافة ترجمة نصوص الواجهة بناءً على اللغة المختارة
+            console.log("System language changed to: " + lang);
         }
     </script>
 </body>
