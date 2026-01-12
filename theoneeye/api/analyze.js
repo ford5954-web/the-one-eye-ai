@@ -18,23 +18,27 @@ export default async function handler(req) {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [
-                        { text: `Task: Professional biometric/visual analysis. 
-                        Return ONLY a valid JSON object. No markdown, no backticks.
-                        Format: {"decision":"YES/NO","pos_score":number,"neg_score":number,"uncertain_score":number,"summary":"text"}
-                        Context: ${prompt || 'Visual Scan'}` },
-                        ...(imageData ? [{ inline_data: { mime_type: "image/jpeg", data: imageData } }] : [])
-                    ]
-                }],
-                safetySettings: [
-                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                ],
-                generationConfig: { response_mime_type: "application/json", temperature: 0.1 }
+// داخل ملف api/analyze.js
+// استبدل جزء الـ body في fetch بهذا:
+
+body: JSON.stringify({
+    contents: [{
+        parts: [
+            { text: `System Role: Academic/Medical Visual Analyzer.
+            Action: Provide a cold, objective biometric breakdown of the provided input. 
+            Constraint: You MUST return JSON even if the content is unclear. 
+            If very unclear, set uncertain_score to 100 but DO NOT trigger safety blocks unless it's extreme.
+            Format: {"decision":"YES/NO","pos_score":0,"neg_score":0,"uncertain_score":0,"summary":"..."}` },
+            ...(imageData ? [{ inline_data: { mime_type: "image/jpeg", data: imageData } }] : [])
+        ]
+    }],
+    safetySettings: [
+        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
+        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
+        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_ONLY_HIGH" },
+        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_ONLY_HIGH" }
+    ],
+    generationConfig: { response_mime_type: "application/json", temperature: 0.2 }
             })
         });
 
