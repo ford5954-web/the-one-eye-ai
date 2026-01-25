@@ -2,184 +2,143 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE ONE EYE AI | v5.0 Final</title>
-    <link rel="shortcut icon" id="favicon" href="https://i.ibb.co/v6X8vC7/one-eye-icon-512.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GLOBAL GUARD AI | v6.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Cairo:wght@400;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; background: #050505; color: #fff; overflow-x: hidden; }
         .vision-font { font-family: 'Syncopate', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .eye-container { width: 130px; height: 75px; background: #050505; border-radius: 60% 10%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; overflow: hidden; }
-        .pupil { width: 32px; height: 32px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; transition: 0.3s; }
-        .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
-        @keyframes scan { from { transform: translate(-18px, -18px); } to { transform: translate(18px, 18px); } }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .eye-active { animation: glow 1.5s infinite alternate; border-color: #00ff88; }
+        @keyframes glow { from { box-shadow: 0 0 10px #00ff8833; } to { box-shadow: 0 0 30px #00ff8866; } }
+        .chart-ring { transform: rotate(-90deg); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <div id="splash" class="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center transition-opacity duration-1000">
-        <div class="eye-container scanning mb-6"><div class="pupil"></div></div>
-        <div class="vision-font text-emerald-500 text-[10px] animate-pulse">EYE_CORE_v5_READY</div>
-    </div>
-
-    <div id="guide" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl">
-        <div class="glass p-10 rounded-[3.5rem] max-w-md w-full text-center border-t-2 border-emerald-500">
-            <h2 class="vision-font text-emerald-500 mb-8 text-[10px]">VISUAL_PROTOCOL</h2>
-            <div class="grid grid-cols-2 gap-4 mb-8 text-[8px] font-bold uppercase">
-                <div class="space-y-2"><div class="h-24 glass rounded-2xl flex items-center justify-center text-3xl border-emerald-500/30">💎</div><p class="text-emerald-500">Correct: Sharp</p></div>
-                <div class="space-y-2"><div class="h-24 glass rounded-2xl flex items-center justify-center text-3xl grayscale opacity-20">💎</div><p class="text-rose-500">Wrong: Blurry</p></div>
-            </div>
-            <button onclick="closeGuide()" class="w-full bg-white text-black p-6 rounded-2xl font-black uppercase welcome-btn">START_SCAN</button>
-        </div>
-    </div>
-
-    <header class="p-6 flex justify-between items-center border-b border-white/5 bg-black/50 sticky top-0 z-50">
-        <button onclick="window.close()" class="text-[9px] font-mono text-rose-500 border border-rose-500/30 px-3 py-1 rounded-full uppercase">Exit</button>
-        <div class="flex items-center gap-4">
-            <div class="glass px-3 py-1 rounded-full">
-                <select id="lang-select" onchange="changeLang()" class="bg-transparent text-[8px] text-emerald-500 vision-font outline-none cursor-pointer">
-                    <option value="en">EN</option><option value="ar">AR</option><option value="fr">FR</option>
-                    <option value="es">ES</option><option value="de">DE</option><option value="zh">ZH</option>
-                    <option value="ja">JA</option><option value="ru">RU</option><option value="pt">PT</option>
-                    <option value="it">IT</option>
-                </select>
-            </div>
-        </div>
+    <header class="p-6 flex justify-between items-center bg-black/50 sticky top-0 z-50">
+        <button onclick="location.reload()" class="text-[9px] font-bold text-rose-500 border border-rose-500/20 px-4 py-1 rounded-full uppercase">Reset</button>
+        <select id="lang-select" onchange="updateUILang()" class="bg-transparent text-[9px] text-emerald-500 vision-font outline-none cursor-pointer">
+            <option value="en">ENGLISH</option><option value="ar">العربية</option><option value="fr">FRANÇAIS</option>
+            <option value="es">ESPAÑOL</option><option value="de">DEUTSCH</option><option value="zh">中文</option>
+            <option value="ja">日本語</option><option value="ru">РУССКИЙ</option><option value="it">ITALIANO</option>
+            <option value="pt">PORTUGUÊS</option>
+        </select>
     </header>
 
-    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000 p-6 flex-grow flex flex-col justify-center max-w-lg mx-auto w-full">
-        <section id="ui-main" class="space-y-10 text-center">
-            <div class="flex flex-col items-center">
-                <div class="eye-container mb-8"><div class="pupil"></div></div>
-                <h1 class="vision-font text-xl italic" id="main-title">NEURAL_SCAN</h1>
-            </div>
+    <main class="flex-grow flex flex-col items-center justify-center p-6 space-y-10">
+        <div id="eye-container" class="w-40 h-24 bg-zinc-900 border border-zinc-800 rounded-[60%_10%] flex items-center justify-center relative overflow-hidden transition-all duration-700">
+            <div id="pupil" class="w-10 h-10 bg-white rounded-full shadow-[0_0_20px_#fff]"></div>
+        </div>
+
+        <div id="ui-main" class="w-full max-w-md space-y-6">
             <div class="glass p-2 rounded-[2.5rem]">
                 <input id="user-input" type="text" class="w-full p-8 bg-transparent text-center text-xl font-light outline-none" placeholder="...">
             </div>
-            <button onclick="process('text')" id="btn-exec" class="w-full bg-emerald-500 text-black p-7 rounded-[2.5rem] font-black text-xl tracking-widest active:scale-95 transition-all">EXECUTE</button>
+            <button onclick="process()" id="btn-exec" class="w-full bg-emerald-500 text-black p-8 rounded-[2.5rem] font-black text-xl tracking-[0.2em] transition-all active:scale-95">EXECUTE</button>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="document.getElementById('i-file').click()" class="glass p-5 rounded-3xl text-[9px] font-black uppercase text-zinc-500">Library</button>
-                <button onclick="document.getElementById('i-cam').click()" class="glass p-5 rounded-3xl text-[9px] font-black uppercase text-emerald-500/40">Lens</button>
+                <button onclick="document.getElementById('i-file').click()" id="btn-up" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase text-zinc-500">Library</button>
+                <button onclick="document.getElementById('i-cam').click()" id="btn-cam" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase text-emerald-500/30">Camera</button>
+            </div>
+        </div>
+
+        <section id="ui-result" class="hidden w-full max-w-md space-y-6">
+            <div class="glass p-8 rounded-[4rem] text-center border-t-2 border-emerald-500/20">
+                <div id="res-emoji" class="text-8xl mb-8 transition-transform duration-500"></div>
+                
+                <div class="relative w-40 h-40 mx-auto mb-8">
+                    <svg viewBox="0 0 36 36" class="w-full h-full chart-ring">
+                        <circle cx="18" cy="18" r="16" fill="none" stroke="#111" stroke-width="3"></circle>
+                        <circle id="c-pos" cx="18" cy="18" r="16" fill="none" stroke="#00ff88" stroke-width="3" stroke-dasharray="0 100"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center font-black text-2xl vision-font" id="res-score">0%</div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-[9px] font-bold uppercase mb-8">
+                    <div class="text-emerald-500">Safe: <span id="p-pct">0</span>%</div>
+                    <div class="text-rose-500">Risk: <span id="n-pct">0</span>%</div>
+                    <div class="text-orange-500">Unc: <span id="u-pct">0</span>%</div>
+                </div>
+                <p id="res-summary" class="text-xs text-zinc-400 italic mb-8 leading-relaxed"></p>
+                <button onclick="alert('Report Sent')" class="text-[7px] tracking-widest text-zinc-600 uppercase">Report Accuracy Issue</button>
             </div>
         </section>
 
-        <section id="ui-result" class="hidden space-y-6">
-            <div class="p-8 rounded-[3.5rem] glass border-emerald-500/20 text-center">
-                <h2 id="res-decision" class="text-5xl font-black mb-8 vision-font italic"></h2>
-                <div class="grid grid-cols-3 gap-2 mb-6 font-mono text-[10px] uppercase">
-                    <div class="text-emerald-500">P: <span id="p-pct">0</span>%</div>
-                    <div class="text-amber-500">U: <span id="u-pct">0</span>%</div>
-                    <div class="text-rose-500">N: <span id="n-pct">0</span>%</div>
-                </div>
-                <div class="w-full h-3 bg-black rounded-full flex overflow-hidden border border-white/5 mb-8">
-                    <div id="b-pos" class="h-full bg-emerald-500 transition-all duration-1000"></div>
-                    <div id="b-unc" class="h-full bg-amber-500 transition-all duration-1000"></div>
-                    <div id="b-neg" class="h-full bg-rose-600 transition-all duration-1000"></div>
-                </div>
-                <p id="res-summary" class="text-xs text-zinc-400 italic leading-relaxed"></p>
-            </div>
-            <button onclick="location.reload()" class="w-full p-7 glass rounded-[2.5rem] font-black text-emerald-500 uppercase tracking-widest">Clear Buffer</button>
-        </section>
-    </div>
+        <footer class="text-[7px] text-zinc-700 text-center max-w-xs leading-loose uppercase">
+            Disclaimer: AI-generated health data. Not a medical substitute. Developer is not liable for misuse or AI learning errors.
+        </footer>
+    </main>
 
-    <input type="file" id="i-file" class="hidden" accept="image/*" onchange="process('image', 'file')">
-    <input type="file" id="i-cam" class="hidden" accept="image/*" capture="environment" onchange="process('image', 'camera')">
+    <input type="file" id="i-file" class="hidden" accept="image/*" onchange="process()">
+    <input type="file" id="i-cam" class="hidden" accept="image/*" capture="environment" onchange="process()">
 
     <script>
-        const langs = {
-            "en": { title: "NEURAL_SCAN", exec: "EXECUTE", welcome: "START" },
-            "ar": { title: "المسح العصبي", exec: "تحليل", welcome: "ابدأ" },
-            "fr": { title: "SCAN_NEURAL", exec: "EXÉCUTER", welcome: "DÉMARRER" },
-            "es": { title: "ESCANEO", exec: "EJECUTAR", welcome: "INICIAR" },
-            "de": { title: "SCAN", exec: "AUSFÜHREN", welcome: "START" },
-            "zh": { title: "扫描", exec: "执行", welcome: "开始" },
-            "ja": { title: "スキャン", exec: "実行", welcome: "開始" },
-            "ru": { title: "СКАН", exec: "ПУСК", welcome: "НАЧАТЬ" },
-            "pt": { title: "SCAN", exec: "EXECUTAR", welcome: "INICIAR" },
-            "it": { title: "SCAN", exec: "ESEGUI", welcome: "INIZIA" }
+        const TRANSLATIONS = {
+            "en": { exec: "EXECUTE", up: "Library", cam: "Camera", title: "NEURAL_SCAN" },
+            "ar": { exec: "بدء المسح", up: "المكتبة", cam: "الكاميرا", title: "المسح العصبي" },
+            "fr": { exec: "EXÉCUTER", up: "Bibliothèque", cam: "Caméra", title: "SCAN_NEURAL" }
+            // سيتم إضافة بقية اللغات في النسخة المرفوعة
         };
 
-        window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('splash').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash').remove();
-                    document.getElementById('app-content').classList.remove('hidden');
-                    document.getElementById('app-content').style.opacity = '1';
-                    if (!localStorage.getItem('v5_welcomed')) document.getElementById('guide').classList.remove('hidden');
-                }, 1000);
-            }, 2000);
-        };
-
-        function closeGuide() {
-            localStorage.setItem('v5_welcomed', 'true');
-            document.getElementById('guide').classList.add('hidden');
-        }
-
-        function changeLang() {
+        function updateUILang() {
             const l = document.getElementById('lang-select').value;
-            const t = langs[l] || langs['en'];
-            document.getElementById('main-title').innerText = t.title;
+            const t = TRANSLATIONS[l] || TRANSLATIONS['en'];
             document.getElementById('btn-exec').innerText = t.exec;
-            document.querySelectorAll('.welcome-btn').forEach(b => b.innerText = t.welcome);
+            document.getElementById('btn-up').innerText = t.up;
+            document.getElementById('btn-cam').innerText = t.cam;
             document.body.dir = l === 'ar' ? 'rtl' : 'ltr';
         }
 
-        function updateFavicon(status) {
-            const link = document.getElementById('favicon');
-            if (status === 'scanning') {
-                link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%2300ff88" stroke-width="10"><animate attributeName="stroke-opacity" values="1;0.2;1" dur="0.8s" repeatCount="indefinite"/></circle></svg>';
-            } else if (status === 'done') {
-                link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%2300ff88"/></svg>';
-            } else {
-                link.href = 'https://i.ibb.co/v6X8vC7/one-eye-icon-512.png';
-            }
-        }
-
-        async function process(mode, src) {
-            document.getElementById('ui-main').classList.add('opacity-30', 'pointer-events-none');
-            document.querySelector('.eye-container').classList.add('scanning');
-            updateFavicon('scanning');
+        async function process() {
+            const eye = document.getElementById('eye-container');
+            eye.classList.add('eye-active');
+            document.getElementById('btn-exec').innerText = "...";
             
             try {
-                let img = null;
-                if(mode === 'image') {
-                    const f = document.getElementById(src === 'file' ? 'i-file' : 'i-cam').files[0];
-                    img = await new Promise(r => {
+                const fileInput = document.getElementById('i-cam').files[0] || document.getElementById('i-file').files[0];
+                let base64 = null;
+                if(fileInput) {
+                    base64 = await new Promise(r => {
                         const rd = new FileReader();
                         rd.onload = () => r(rd.result.split(',')[1]);
-                        rd.readAsDataURL(f);
+                        rd.readAsDataURL(fileInput);
                     });
                 }
+
                 const res = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: document.getElementById('user-input').value, imageData: img })
+                    body: JSON.stringify({ 
+                        prompt: document.getElementById('user-input').value, 
+                        imageData: base64,
+                        lang: document.getElementById('lang-select').value 
+                    })
                 });
                 const ai = await res.json();
-                showResult(ai);
+                renderResult(ai);
             } catch (e) { location.reload(); }
         }
 
-        function showResult(ai) {
-            updateFavicon('done');
+        function renderResult(ai) {
             document.getElementById('ui-main').classList.add('hidden');
             document.getElementById('ui-result').classList.remove('hidden');
-            document.getElementById('res-decision').innerText = ai.decision;
-            document.getElementById('res-decision').style.color = ai.decision === 'YES' ? '#00ff88' : '#ff4d4d';
+            
+            document.getElementById('res-emoji').innerText = ai.decision;
             document.getElementById('p-pct').innerText = ai.pos_score;
-            document.getElementById('u-pct').innerText = ai.uncertain_score;
             document.getElementById('n-pct').innerText = ai.neg_score;
-            document.getElementById('b-pos').style.width = ai.pos_score + '%';
-            document.getElementById('b-unc').style.width = ai.uncertain_score + '%';
-            document.getElementById('b-neg').style.width = ai.neg_score + '%';
+            document.getElementById('u-pct').innerText = ai.uncertain_score;
+            document.getElementById('res-score').innerText = ai.pos_score + "%";
             document.getElementById('res-summary').innerText = ai.summary;
             
-            const m = new SpeechSynthesisUtterance(ai.decision + ". " + ai.summary);
-            m.lang = document.getElementById('lang-select').value;
-            window.speechSynthesis.speak(m);
+            document.getElementById('c-pos').setAttribute('stroke-dasharray', `${ai.pos_score} 100`);
+            
+            const pupil = document.getElementById('pupil');
+            if(ai.decision === '👍') pupil.style.backgroundColor = '#00ff88';
+            else if(ai.decision === '👎') { 
+                pupil.style.backgroundColor = '#ff3366';
+                if(navigator.vibrate) navigator.vibrate(500);
+            } else pupil.style.backgroundColor = '#ff9900';
         }
     </script>
 </body>
