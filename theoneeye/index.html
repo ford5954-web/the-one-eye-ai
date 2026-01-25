@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE ONE EYE AI | Global Edition</title>
+    <title>THE ONE EYE AI | v5.0 Final</title>
+    <link rel="shortcut icon" id="favicon" href="https://i.ibb.co/v6X8vC7/one-eye-icon-512.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         .vision-font { font-family: 'Syncopate', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .eye-container { width: 130px; height: 75px; background: #050505; border-radius: 60% 10%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); overflow: hidden; }
-        .pupil { width: 32px; height: 32px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; }
+        .eye-container { width: 130px; height: 75px; background: #050505; border-radius: 60% 10%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; overflow: hidden; }
+        .pupil { width: 32px; height: 32px; background: #fff; border-radius: 50%; box-shadow: 0 0 25px #fff; transition: 0.3s; }
         .scanning .pupil { animation: scan 1.2s infinite alternate; background: #00ff88; box-shadow: 0 0 40px #00ff88; }
         @keyframes scan { from { transform: translate(-18px, -18px); } to { transform: translate(18px, 18px); } }
     </style>
@@ -20,23 +21,17 @@
 
     <div id="splash" class="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center transition-opacity duration-1000">
         <div class="eye-container scanning mb-6"><div class="pupil"></div></div>
-        <div class="vision-font text-emerald-500 text-[10px] animate-pulse">EYE_CORE_ACTIVE</div>
+        <div class="vision-font text-emerald-500 text-[10px] animate-pulse">EYE_CORE_v5_READY</div>
     </div>
 
-    <div id="welcome-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black/95">
-        <div class="glass p-8 rounded-[3rem] max-w-md w-full text-center border-t border-emerald-500">
-            <h2 class="vision-font text-emerald-500 mb-6 text-[10px]">VISUAL_GUIDE</h2>
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <div class="space-y-2">
-                    <div class="h-20 glass rounded-xl flex items-center justify-center text-2xl border-emerald-500/50">💎</div>
-                    <p class="text-[7px] text-emerald-500 font-bold uppercase">Best: Clear Light</p>
-                </div>
-                <div class="space-y-2">
-                    <div class="h-20 glass rounded-xl flex items-center justify-center text-2xl grayscale opacity-30">💎</div>
-                    <p class="text-[7px] text-rose-500 font-bold uppercase">Avoid: Blurry</p>
-                </div>
+    <div id="guide" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl">
+        <div class="glass p-10 rounded-[3.5rem] max-w-md w-full text-center border-t-2 border-emerald-500">
+            <h2 class="vision-font text-emerald-500 mb-8 text-[10px]">VISUAL_PROTOCOL</h2>
+            <div class="grid grid-cols-2 gap-4 mb-8 text-[8px] font-bold uppercase">
+                <div class="space-y-2"><div class="h-24 glass rounded-2xl flex items-center justify-center text-3xl border-emerald-500/30">💎</div><p class="text-emerald-500">Correct: Sharp</p></div>
+                <div class="space-y-2"><div class="h-24 glass rounded-2xl flex items-center justify-center text-3xl grayscale opacity-20">💎</div><p class="text-rose-500">Wrong: Blurry</p></div>
             </div>
-            <button onclick="closeWelcome()" class="w-full bg-white text-black p-5 rounded-2xl font-black uppercase tracking-widest welcome-btn">START</button>
+            <button onclick="closeGuide()" class="w-full bg-white text-black p-6 rounded-2xl font-black uppercase welcome-btn">START_SCAN</button>
         </div>
     </div>
 
@@ -44,7 +39,7 @@
         <button onclick="window.close()" class="text-[9px] font-mono text-rose-500 border border-rose-500/30 px-3 py-1 rounded-full uppercase">Exit</button>
         <div class="flex items-center gap-4">
             <div class="glass px-3 py-1 rounded-full">
-                <select id="lang-select" onchange="changeLang()" class="bg-transparent text-[8px] text-emerald-500 vision-font outline-none">
+                <select id="lang-select" onchange="changeLang()" class="bg-transparent text-[8px] text-emerald-500 vision-font outline-none cursor-pointer">
                     <option value="en">EN</option><option value="ar">AR</option><option value="fr">FR</option>
                     <option value="es">ES</option><option value="de">DE</option><option value="zh">ZH</option>
                     <option value="ja">JA</option><option value="ru">RU</option><option value="pt">PT</option>
@@ -55,7 +50,7 @@
     </header>
 
     <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000 p-6 flex-grow flex flex-col justify-center max-w-lg mx-auto w-full">
-        <section id="ui-main" class="space-y-10">
+        <section id="ui-main" class="space-y-10 text-center">
             <div class="flex flex-col items-center">
                 <div class="eye-container mb-8"><div class="pupil"></div></div>
                 <h1 class="vision-font text-xl italic" id="main-title">NEURAL_SCAN</h1>
@@ -65,27 +60,27 @@
             </div>
             <button onclick="process('text')" id="btn-exec" class="w-full bg-emerald-500 text-black p-7 rounded-[2.5rem] font-black text-xl tracking-widest active:scale-95 transition-all">EXECUTE</button>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="document.getElementById('i-file').click()" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase text-zinc-500">Upload</button>
-                <button onclick="document.getElementById('i-cam').click()" class="glass p-5 rounded-3xl text-[9px] font-bold uppercase text-emerald-500/50">Camera</button>
+                <button onclick="document.getElementById('i-file').click()" class="glass p-5 rounded-3xl text-[9px] font-black uppercase text-zinc-500">Library</button>
+                <button onclick="document.getElementById('i-cam').click()" class="glass p-5 rounded-3xl text-[9px] font-black uppercase text-emerald-500/40">Lens</button>
             </div>
         </section>
 
         <section id="ui-result" class="hidden space-y-6">
             <div class="p-8 rounded-[3.5rem] glass border-emerald-500/20 text-center">
-                <h2 id="res-decision" class="text-4xl md:text-5xl font-black mb-8 vision-font italic break-words"></h2>
-                <div class="grid grid-cols-3 gap-2 mb-6 font-mono text-[9px] uppercase">
-                    <div class="text-emerald-500">Pos: <span id="p-pct">0</span>%</div>
-                    <div class="text-amber-500">Unc: <span id="u-pct">0</span>%</div>
-                    <div class="text-rose-500">Neg: <span id="n-pct">0</span>%</div>
+                <h2 id="res-decision" class="text-5xl font-black mb-8 vision-font italic"></h2>
+                <div class="grid grid-cols-3 gap-2 mb-6 font-mono text-[10px] uppercase">
+                    <div class="text-emerald-500">P: <span id="p-pct">0</span>%</div>
+                    <div class="text-amber-500">U: <span id="u-pct">0</span>%</div>
+                    <div class="text-rose-500">N: <span id="n-pct">0</span>%</div>
                 </div>
-                <div class="w-full h-2 bg-black rounded-full flex overflow-hidden mb-8 border border-white/5">
+                <div class="w-full h-3 bg-black rounded-full flex overflow-hidden border border-white/5 mb-8">
                     <div id="b-pos" class="h-full bg-emerald-500 transition-all duration-1000"></div>
                     <div id="b-unc" class="h-full bg-amber-500 transition-all duration-1000"></div>
                     <div id="b-neg" class="h-full bg-rose-600 transition-all duration-1000"></div>
                 </div>
-                <p id="res-summary" class="text-xs text-zinc-400 italic"></p>
+                <p id="res-summary" class="text-xs text-zinc-400 italic leading-relaxed"></p>
             </div>
-            <button onclick="location.reload()" class="w-full p-7 glass rounded-[2.5rem] font-black text-emerald-500 uppercase">New Scan</button>
+            <button onclick="location.reload()" class="w-full p-7 glass rounded-[2.5rem] font-black text-emerald-500 uppercase tracking-widest">Clear Buffer</button>
         </section>
     </div>
 
@@ -113,14 +108,14 @@
                     document.getElementById('splash').remove();
                     document.getElementById('app-content').classList.remove('hidden');
                     document.getElementById('app-content').style.opacity = '1';
-                    if (!localStorage.getItem('welcomed')) document.getElementById('welcome-modal').classList.remove('hidden');
+                    if (!localStorage.getItem('v5_welcomed')) document.getElementById('guide').classList.remove('hidden');
                 }, 1000);
             }, 2000);
         };
 
-        function closeWelcome() {
-            localStorage.setItem('welcomed', 'true');
-            document.getElementById('welcome-modal').classList.add('hidden');
+        function closeGuide() {
+            localStorage.setItem('v5_welcomed', 'true');
+            document.getElementById('guide').classList.add('hidden');
         }
 
         function changeLang() {
@@ -132,8 +127,22 @@
             document.body.dir = l === 'ar' ? 'rtl' : 'ltr';
         }
 
+        function updateFavicon(status) {
+            const link = document.getElementById('favicon');
+            if (status === 'scanning') {
+                link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%2300ff88" stroke-width="10"><animate attributeName="stroke-opacity" values="1;0.2;1" dur="0.8s" repeatCount="indefinite"/></circle></svg>';
+            } else if (status === 'done') {
+                link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%2300ff88"/></svg>';
+            } else {
+                link.href = 'https://i.ibb.co/v6X8vC7/one-eye-icon-512.png';
+            }
+        }
+
         async function process(mode, src) {
-            document.getElementById('ui-main').classList.add('hidden');
+            document.getElementById('ui-main').classList.add('opacity-30', 'pointer-events-none');
+            document.querySelector('.eye-container').classList.add('scanning');
+            updateFavicon('scanning');
+            
             try {
                 let img = null;
                 if(mode === 'image') {
@@ -155,6 +164,8 @@
         }
 
         function showResult(ai) {
+            updateFavicon('done');
+            document.getElementById('ui-main').classList.add('hidden');
             document.getElementById('ui-result').classList.remove('hidden');
             document.getElementById('res-decision').innerText = ai.decision;
             document.getElementById('res-decision').style.color = ai.decision === 'YES' ? '#00ff88' : '#ff4d4d';
@@ -165,6 +176,10 @@
             document.getElementById('b-unc').style.width = ai.uncertain_score + '%';
             document.getElementById('b-neg').style.width = ai.neg_score + '%';
             document.getElementById('res-summary').innerText = ai.summary;
+            
+            const m = new SpeechSynthesisUtterance(ai.decision + ". " + ai.summary);
+            m.lang = document.getElementById('lang-select').value;
+            window.speechSynthesis.speak(m);
         }
     </script>
 </body>
